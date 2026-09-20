@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package auth;
+
+option go_package = ".";
+
+message TLSRequest {
+  string id = 1;
+  string client_public_key = 2;
+  bool is_registring = 3;
+}
+
+message TLSResponse {
+  string server_public_key = 1;
+}
+
+message RegisterRequest {
+  string login = 1;
+  string name = 2;
+  string password = 3;
+  string device = 4;
+}
+
+message RegisterResponse {
+  string key = 1;
+}
+
+message AuthRequest {
+  string login = 1;
+  string password = 2;
+  string device = 3;
+}
+
+message AuthResponse {
+  string name = 1;
+  string key = 2;
+}
+
+message GetKeyRequest {
+  string device = 1;
+}
+
+message GetKeyResponse {
+  string key = 1;
+}
+
+service Users {
+  rpc TLS(TLSRequest) returns (TLSResponse);
+  rpc Register(RegisterRequest) returns (RegisterResponse);
+  rpc Auth(AuthRequest) returns (AuthResponse);
+  rpc GetKey(GetKeyRequest) returns (GetKeyResponse);
+}
