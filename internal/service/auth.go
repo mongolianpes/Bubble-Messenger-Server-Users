@@ -167,3 +167,14 @@ func (s *UsersService) Auth(ctx context.Context, req *pb.AuthRequest) (*pb.AuthR
 
 	return resp, nil
 }
+
+func (s *UsersService) GetKey(ctx context.Context, req *pb.GetKeyRequest) (*pb.GetKeyResponse, error) {
+	key, err := s.sessionStorage.GetKey(ctx, req.Device)
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.GetKeyResponse{
+		Key: key,
+	}, nil
+}
