@@ -44,9 +44,23 @@ message GetKeyResponse {
   string key = 1;
 }
 
+message SearchRequest {
+  string query = 1;
+}
+
+message UserInfo {
+  string login = 1;
+  string name = 2;
+}
+
+message SearchResponse {
+  repeated UserInfo users = 1;
+}
+
 service Users {
   rpc TLS(TLSRequest) returns (TLSResponse);
   rpc Register(RegisterRequest) returns (RegisterResponse);
   rpc Auth(AuthRequest) returns (AuthResponse);
   rpc GetKey(GetKeyRequest) returns (GetKeyResponse);
+  rpc Search(SearchRequest) returns (SearchResponse);
 }

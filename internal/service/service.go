@@ -8,13 +8,13 @@ import (
 
 type UsersService struct {
 	pb.UnimplementedUsersServer
-	sessionStorage rdb.SessionStorage
-	usersStorage   db.UsersStorage
+	cacheStorage rdb.CacheStorage
+	SQLStorage   db.SQLStorage
 }
 
-func NewUsersService(sessionStorage rdb.SessionStorage, usersStorage db.UsersStorage) *UsersService {
+func NewUsersService(sessionStorage rdb.CacheStorage, usersStorage db.SQLStorage) *UsersService {
 	return &UsersService{
-		sessionStorage: sessionStorage,
-		usersStorage:   usersStorage,
+		cacheStorage: sessionStorage,
+		SQLStorage:   usersStorage,
 	}
 }

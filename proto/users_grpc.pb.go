@@ -23,6 +23,7 @@ const (
 	Users_Register_FullMethodName = "/auth.Users/Register"
 	Users_Auth_FullMethodName     = "/auth.Users/Auth"
 	Users_GetKey_FullMethodName   = "/auth.Users/GetKey"
+	Users_Search_FullMethodName   = "/auth.Users/Search"
 )
 
 // UsersClient is the client API for Users service.
@@ -33,6 +34,7 @@ type UsersClient interface {
 	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
 	Auth(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*AuthResponse, error)
 	GetKey(ctx context.Context, in *GetKeyRequest, opts ...grpc.CallOption) (*GetKeyResponse, error)
+	Search(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*SearchResponse, error)
 }
 
 type usersClient struct {
@@ -83,6 +85,16 @@ func (c *usersClient) GetKey(ctx context.Context, in *GetKeyRequest, opts ...grp
 	return out, nil
 }
 
+func (c *usersClient) Search(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*SearchResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SearchResponse)
+	err := c.cc.Invoke(ctx, Users_Search_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UsersServer is the server API for Users service.
 // All implementations must embed UnimplementedUsersServer
 // for forward compatibility.
@@ -91,6 +103,7 @@ type UsersServer interface {
 	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
 	Auth(context.Context, *AuthRequest) (*AuthResponse, error)
 	GetKey(context.Context, *GetKeyRequest) (*GetKeyResponse, error)
+	Search(context.Context, *SearchRequest) (*SearchResponse, error)
 	mustEmbedUnimplementedUsersServer()
 }
 
@@ -112,6 +125,9 @@ func (UnimplementedUsersServer) Auth(context.Context, *AuthRequest) (*AuthRespon
 }
 func (UnimplementedUsersServer) GetKey(context.Context, *GetKeyRequest) (*GetKeyResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetKey not implemented")
+}
+func (UnimplementedUsersServer) Search(context.Context, *SearchRequest) (*SearchResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method Search not implemented")
 }
 func (UnimplementedUsersServer) mustEmbedUnimplementedUsersServer() {}
 func (UnimplementedUsersServer) testEmbeddedByValue()               {}
@@ -206,6 +222,24 @@ func _Users_GetKey_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Users_Search_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UsersServer).Search(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Users_Search_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UsersServer).Search(ctx, req.(*SearchRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Users_ServiceDesc is the grpc.ServiceDesc for Users service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -228,6 +262,10 @@ var Users_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetKey",
 			Handler:    _Users_GetKey_Handler,
+		},
+		{
+			MethodName: "Search",
+			Handler:    _Users_Search_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

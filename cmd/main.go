@@ -12,6 +12,8 @@ import (
 )
 
 func main() {
+	go service.CheckStartRegAuthUsersTime()
+
 	usersStorage, err := db.NewPostgresStorage()
 	if err != nil {
 		panic(err)

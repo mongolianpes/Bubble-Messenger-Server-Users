@@ -437,6 +437,146 @@ func (x *GetKeyResponse) GetKey() string {
 	return ""
 }
 
+type SearchRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Query         string                 `protobuf:"bytes,1,opt,name=query,proto3" json:"query,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SearchRequest) Reset() {
+	*x = SearchRequest{}
+	mi := &file_users_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SearchRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SearchRequest) ProtoMessage() {}
+
+func (x *SearchRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_users_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SearchRequest.ProtoReflect.Descriptor instead.
+func (*SearchRequest) Descriptor() ([]byte, []int) {
+	return file_users_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *SearchRequest) GetQuery() string {
+	if x != nil {
+		return x.Query
+	}
+	return ""
+}
+
+type UserInfo struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Login         string                 `protobuf:"bytes,1,opt,name=login,proto3" json:"login,omitempty"`
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UserInfo) Reset() {
+	*x = UserInfo{}
+	mi := &file_users_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UserInfo) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UserInfo) ProtoMessage() {}
+
+func (x *UserInfo) ProtoReflect() protoreflect.Message {
+	mi := &file_users_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UserInfo.ProtoReflect.Descriptor instead.
+func (*UserInfo) Descriptor() ([]byte, []int) {
+	return file_users_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *UserInfo) GetLogin() string {
+	if x != nil {
+		return x.Login
+	}
+	return ""
+}
+
+func (x *UserInfo) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+type SearchResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Users         []*UserInfo            `protobuf:"bytes,1,rep,name=users,proto3" json:"users,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SearchResponse) Reset() {
+	*x = SearchResponse{}
+	mi := &file_users_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SearchResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SearchResponse) ProtoMessage() {}
+
+func (x *SearchResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_users_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SearchResponse.ProtoReflect.Descriptor instead.
+func (*SearchResponse) Descriptor() ([]byte, []int) {
+	return file_users_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *SearchResponse) GetUsers() []*UserInfo {
+	if x != nil {
+		return x.Users
+	}
+	return nil
+}
+
 var File_users_proto protoreflect.FileDescriptor
 
 const file_users_proto_rawDesc = "" +
@@ -466,12 +606,20 @@ const file_users_proto_rawDesc = "" +
 	"\rGetKeyRequest\x12\x16\n" +
 	"\x06device\x18\x01 \x01(\tR\x06device\"\"\n" +
 	"\x0eGetKeyResponse\x12\x10\n" +
-	"\x03key\x18\x01 \x01(\tR\x03key2\xd2\x01\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\"%\n" +
+	"\rSearchRequest\x12\x14\n" +
+	"\x05query\x18\x01 \x01(\tR\x05query\"4\n" +
+	"\bUserInfo\x12\x14\n" +
+	"\x05login\x18\x01 \x01(\tR\x05login\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\"6\n" +
+	"\x0eSearchResponse\x12$\n" +
+	"\x05users\x18\x01 \x03(\v2\x0e.auth.UserInfoR\x05users2\x87\x02\n" +
 	"\x05Users\x12*\n" +
 	"\x03TLS\x12\x10.auth.TLSRequest\x1a\x11.auth.TLSResponse\x129\n" +
 	"\bRegister\x12\x15.auth.RegisterRequest\x1a\x16.auth.RegisterResponse\x12-\n" +
 	"\x04Auth\x12\x11.auth.AuthRequest\x1a\x12.auth.AuthResponse\x123\n" +
-	"\x06GetKey\x12\x13.auth.GetKeyRequest\x1a\x14.auth.GetKeyResponseB\x03Z\x01.b\x06proto3"
+	"\x06GetKey\x12\x13.auth.GetKeyRequest\x1a\x14.auth.GetKeyResponse\x123\n" +
+	"\x06Search\x12\x13.auth.SearchRequest\x1a\x14.auth.SearchResponseB\x03Z\x01.b\x06proto3"
 
 var (
 	file_users_proto_rawDescOnce sync.Once
@@ -485,7 +633,7 @@ func file_users_proto_rawDescGZIP() []byte {
 	return file_users_proto_rawDescData
 }
 
-var file_users_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_users_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
 var file_users_proto_goTypes = []any{
 	(*TLSRequest)(nil),       // 0: auth.TLSRequest
 	(*TLSResponse)(nil),      // 1: auth.TLSResponse
@@ -495,21 +643,27 @@ var file_users_proto_goTypes = []any{
 	(*AuthResponse)(nil),     // 5: auth.AuthResponse
 	(*GetKeyRequest)(nil),    // 6: auth.GetKeyRequest
 	(*GetKeyResponse)(nil),   // 7: auth.GetKeyResponse
+	(*SearchRequest)(nil),    // 8: auth.SearchRequest
+	(*UserInfo)(nil),         // 9: auth.UserInfo
+	(*SearchResponse)(nil),   // 10: auth.SearchResponse
 }
 var file_users_proto_depIdxs = []int32{
-	0, // 0: auth.Users.TLS:input_type -> auth.TLSRequest
-	2, // 1: auth.Users.Register:input_type -> auth.RegisterRequest
-	4, // 2: auth.Users.Auth:input_type -> auth.AuthRequest
-	6, // 3: auth.Users.GetKey:input_type -> auth.GetKeyRequest
-	1, // 4: auth.Users.TLS:output_type -> auth.TLSResponse
-	3, // 5: auth.Users.Register:output_type -> auth.RegisterResponse
-	5, // 6: auth.Users.Auth:output_type -> auth.AuthResponse
-	7, // 7: auth.Users.GetKey:output_type -> auth.GetKeyResponse
-	4, // [4:8] is the sub-list for method output_type
-	0, // [0:4] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	9,  // 0: auth.SearchResponse.users:type_name -> auth.UserInfo
+	0,  // 1: auth.Users.TLS:input_type -> auth.TLSRequest
+	2,  // 2: auth.Users.Register:input_type -> auth.RegisterRequest
+	4,  // 3: auth.Users.Auth:input_type -> auth.AuthRequest
+	6,  // 4: auth.Users.GetKey:input_type -> auth.GetKeyRequest
+	8,  // 5: auth.Users.Search:input_type -> auth.SearchRequest
+	1,  // 6: auth.Users.TLS:output_type -> auth.TLSResponse
+	3,  // 7: auth.Users.Register:output_type -> auth.RegisterResponse
+	5,  // 8: auth.Users.Auth:output_type -> auth.AuthResponse
+	7,  // 9: auth.Users.GetKey:output_type -> auth.GetKeyResponse
+	10, // 10: auth.Users.Search:output_type -> auth.SearchResponse
+	6,  // [6:11] is the sub-list for method output_type
+	1,  // [1:6] is the sub-list for method input_type
+	1,  // [1:1] is the sub-list for extension type_name
+	1,  // [1:1] is the sub-list for extension extendee
+	0,  // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_users_proto_init() }
@@ -523,7 +677,7 @@ func file_users_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_users_proto_rawDesc), len(file_users_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   8,
+			NumMessages:   11,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

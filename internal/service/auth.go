@@ -113,7 +113,7 @@ func (s *UsersService) Register(ctx context.Context, req *pb.RegisterRequest) (*
 		return nil, err
 	}
 
-	if err := s.sessionStorage.SetSession(ctx, req.Device, key); err != nil {
+	if err := s.cacheStorage.SetSession(ctx, req.Device, key); err != nil {
 		return nil, err
 	}
 
@@ -122,7 +122,7 @@ func (s *UsersService) Register(ctx context.Context, req *pb.RegisterRequest) (*
 		return resp, err
 	}
 
-	if err := s.usersStorage.RegisterUser(ctx, req.Login, req.Name, hashedPassword); err != nil {
+	if err := s.SQLStorage.RegisterUser(ctx, req.Login, req.Name, hashedPassword); err != nil {
 		return resp, err
 	}
 
@@ -152,7 +152,7 @@ func (s *UsersService) Auth(ctx context.Context, req *pb.AuthRequest) (*pb.AuthR
 		Key: key,
 	}
 
-	currentPassword, err := s.usersStorage.GetPassword(ctx, req.Login)
+	currentPassword, err := s.SQLStorage.GetPassword(ctx, req.Login)
 	if err != nil {
 		return resp, err
 	}
@@ -161,7 +161,7 @@ func (s *UsersService) Auth(ctx context.Context, req *pb.AuthRequest) (*pb.AuthR
 		return resp, errors.New("Incorrect login or password")
 	}
 
-	if err := s.sessionStorage.SetSession(ctx, req.Device, key); err != nil {
+	if err := s.cacheStorage.SetSession(ctx, req.Device, key); err != nil {
 		return resp, err
 	}
 
@@ -169,7 +169,7 @@ func (s *UsersService) Auth(ctx context.Context, req *pb.AuthRequest) (*pb.AuthR
 }
 
 func (s *UsersService) GetKey(ctx context.Context, req *pb.GetKeyRequest) (*pb.GetKeyResponse, error) {
-	key, err := s.sessionStorage.GetKey(ctx, req.Device)
+	key, err := s.cacheStorage.GetKey(ctx, req.Device)
 	if err != nil {
 		return nil, err
 	}

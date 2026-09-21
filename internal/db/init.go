@@ -11,9 +11,10 @@ type PostgresStorage struct {
 	db *sql.DB
 }
 
-type UsersStorage interface {
+type SQLStorage interface {
 	RegisterUser(ctx context.Context, login, name, password string) error
 	GetPassword(ctx context.Context, login string) (string, error)
+	GetUserInfo(ctx context.Context, login string) (string, error)
 }
 
 func NewPostgresStorage() (*PostgresStorage, error) {

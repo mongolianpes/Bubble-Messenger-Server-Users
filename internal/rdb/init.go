@@ -5,6 +5,8 @@ import (
 	"os"
 	"time"
 
+	pb "users/proto"
+
 	"github.com/redis/go-redis/v9"
 )
 
@@ -12,9 +14,11 @@ type RedisStorage struct {
 	rdb *redis.Client
 }
 
-type SessionStorage interface {
+type CacheStorage interface {
 	SetSession(ctx context.Context, sessionKey, userID string) error
 	GetKey(ctx context.Context, device string) (string, error)
+	GetUsers(ctx context.Context, login string) (result []*pb.UserInfo, err error)
+	SaveUser(ctx context.Context, login, name string) error
 	Close() error
 }
 
