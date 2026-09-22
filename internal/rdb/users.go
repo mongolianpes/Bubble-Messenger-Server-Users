@@ -41,5 +41,5 @@ func (s *RedisStorage) GetUsers(ctx context.Context, login string) (result []*pb
 }
 
 func (s *RedisStorage) SaveUser(ctx context.Context, login, name string) error {
-	return s.rdb.Set(ctx, login, name, timeToSaveSession).Err()
+	return s.rdb.Set(ctx, prefixForUser+login, name, timeToSaveUser).Err()
 }

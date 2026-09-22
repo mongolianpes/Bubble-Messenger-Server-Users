@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 	"errors"
-	"regexp"
+	"sync"
 	"time"
 
 	"users/internal/crypto"
@@ -12,67 +12,90 @@ import (
 	pb "users/proto"
 )
 
-var registringUsers = map[string]activeUserInfo{}
-var authUsers = map[string]activeUserInfo{}
+const (
+	waitingTimeRegAndAuth = time.Second * 10
+	limitForActiveUsers   = 15
+)
 
-type activeUserInfo struct {
-	Key  string
-	Time time.Time
+type info struct {
+	key       string
+	expiresAt time.Time
 }
 
-var regexpSymbols *regexp.Regexp = regexp.MustCompile(`^[a-zA-Z0-9_-]+$`)
+type ActiveUsers struct {
+	reg  map[string]info
+	auth map[string]info
+	sync.Mutex
+}
 
-func CheckStartRegAuthUsersTime() {
-	durationDelete := time.Second * 12
-	sleepTime := time.Second * 20
-	for {
-		for user := range registringUsers {
-			durationStartToNow := time.Since(registringUsers[user].Time)
-			if durationStartToNow > durationDelete {
-				delete(registringUsers, user)
-			}
+func NewAuthAndRegUsers() *ActiveUsers {
+	users := ActiveUsers{
+		reg:  map[string]info{},
+		auth: map[string]info{},
+	}
+
+	go func() {
+		ticker := time.NewTicker(waitingTimeRegAndAuth)
+		defer ticker.Stop()
+		for range ticker.C {
+			users.cleanup()
 		}
-		for user := range authUsers {
-			durationStartToNow := time.Since(authUsers[user].Time)
-			if durationStartToNow > durationDelete {
-				delete(authUsers, user)
-			}
+	}()
+
+	return &users
+}
+
+func (u *ActiveUsers) cleanup() {
+	u.Lock()
+	defer u.Unlock()
+	now := time.Now()
+	for k, v := range u.reg {
+		if now.After(v.expiresAt) {
+			delete(u.reg, k)
 		}
-		time.Sleep(sleepTime)
+	}
+
+	for k, v := range u.auth {
+		if now.After(v.expiresAt) {
+			delete(u.auth, k)
+		}
 	}
 }
 
 func (s *UsersService) TLS(ctx context.Context, req *pb.TLSRequest) (*pb.TLSResponse, error) {
+	s.activeUsers.Lock()
+	defer s.activeUsers.Unlock()
+
+	if req.IsRegistring {
+		if _, ok := s.activeUsers.reg[req.Id]; ok {
+			return nil, errors.New("User with this login registrating now, retry 10 seconds")
+		}
+	} else {
+		if _, ok := s.activeUsers.auth[req.Id]; ok {
+			return nil, errors.New("User with this login auth now, retry 10 seconds")
+		}
+	}
+
 	sharedSecret, serverPublicKey, err := ecdh.GenerateKeys(req.ClientPublicKey)
 	if err != nil {
 		return nil, err
 	}
 
 	if req.IsRegistring {
-		if _, ok := registringUsers[req.Id]; ok {
-			return nil, errors.New("User with this login registrating now, retry 10 minutes")
-		}
-	} else {
-		if _, ok := authUsers[req.Id]; ok {
-			return nil, errors.New("User with this login auth now, retry 10 minutes")
-		}
-	}
-
-	if req.IsRegistring {
-		if len(registringUsers) > 15 {
+		if len(s.activeUsers.reg) > limitForActiveUsers {
 			return nil, errors.New("Try registering in 3 minutes")
 		}
-		registringUsers[req.Id] = activeUserInfo{
-			Key:  sharedSecret,
-			Time: time.Now(),
+		s.activeUsers.reg[req.Id] = info{
+			key:       sharedSecret,
+			expiresAt: time.Now(),
 		}
 	} else {
-		if len(authUsers) > 15 {
-			return nil, errors.New("Please try logging in in 3 minutes")
+		if len(s.activeUsers.auth) > limitForActiveUsers {
+			return nil, errors.New("Please try logging in 3 minutes")
 		}
-		authUsers[req.Id] = activeUserInfo{
-			Key:  sharedSecret,
-			Time: time.Now(),
+		s.activeUsers.auth[req.Id] = info{
+			key:       sharedSecret,
+			expiresAt: time.Now(),
 		}
 	}
 
@@ -83,13 +106,16 @@ func (s *UsersService) TLS(ctx context.Context, req *pb.TLSRequest) (*pb.TLSResp
 }
 
 func (s *UsersService) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.RegisterResponse, error) {
-	_, ok := registringUsers[req.Device]
+	s.activeUsers.Lock()
+	defer s.activeUsers.Unlock()
+	info, ok := s.activeUsers.reg[req.Device]
 	if !ok {
 		return nil, errors.New("This request is not expected for you")
 	}
 
-	key := registringUsers[req.Device].Key
-	delete(registringUsers, req.Device)
+	delete(s.activeUsers.reg, req.Device)
+
+	key := info.key
 
 	var err error
 	req.Login, err = crypto.StringDecrypt(req.Login, key)
@@ -130,13 +156,15 @@ func (s *UsersService) Register(ctx context.Context, req *pb.RegisterRequest) (*
 }
 
 func (s *UsersService) Auth(ctx context.Context, req *pb.AuthRequest) (*pb.AuthResponse, error) {
-	_, ok := authUsers[req.Device]
+	s.activeUsers.Lock()
+	defer s.activeUsers.Unlock()
+	info, ok := s.activeUsers.auth[req.Device]
 	if !ok {
 		return nil, errors.New("This request is not expected for you")
 	}
 
 	var err error
-	key := authUsers[req.Device].Key
+	key := info.key
 	req.Login, err = crypto.StringDecrypt(req.Login, key)
 	if err != nil {
 		return nil, err
@@ -146,7 +174,7 @@ func (s *UsersService) Auth(ctx context.Context, req *pb.AuthRequest) (*pb.AuthR
 		return nil, err
 	}
 
-	delete(authUsers, req.Device)
+	delete(s.activeUsers.auth, req.Device)
 
 	resp := &pb.AuthResponse{
 		Key: key,
