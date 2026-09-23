@@ -34,24 +34,30 @@ func TestCleanup(t *testing.T) {
 	assert.False(t, ok)
 }
 
-func TestGetKey(t *testing.T) {
+func TestGetAuthInfo(t *testing.T) {
 	ctx := context.Background()
 
 	t.Run("success", func(t *testing.T) {
 		svc, _, cache := newTestService()
-		cache.On("GetKey", ctx, "dev-1").Return("secret-key", nil).Once()
+		cache.On("GetAuthInfo", ctx, "dev-1").
+			Return("secret-key", 42, nil).
+			Once()
 
-		resp, err := svc.GetKey(ctx, &pb.GetKeyRequest{Device: "dev-1"})
+		resp, err := svc.GetAuthInfo(ctx, &pb.GetAuthInfoRequest{Device: "dev-1"})
 		require.NoError(t, err)
+		require.NotNil(t, resp)
 		assert.Equal(t, "secret-key", resp.Key)
+		assert.Equal(t, int64(42), resp.UserId)
 		cache.AssertExpectations(t)
 	})
 
 	t.Run("error from cache", func(t *testing.T) {
 		svc, _, cache := newTestService()
-		cache.On("GetKey", ctx, "dev-2").Return("", errors.New("not found")).Once()
+		cache.On("GetAuthInfo", ctx, "dev-2").
+			Return("", 0, errors.New("not found")).
+			Once()
 
-		resp, err := svc.GetKey(ctx, &pb.GetKeyRequest{Device: "dev-2"})
+		resp, err := svc.GetAuthInfo(ctx, &pb.GetAuthInfoRequest{Device: "dev-2"})
 		require.Error(t, err)
 		assert.Nil(t, resp)
 		cache.AssertExpectations(t)

@@ -11,7 +11,7 @@ import (
 	pb "users/proto"
 )
 
-func TestUsersService_Search(t *testing.T) {
+func TestSearch(t *testing.T) {
 	ctx := context.Background()
 
 	t.Run("exact match with @ prefix - success", func(t *testing.T) {
@@ -19,9 +19,10 @@ func TestUsersService_Search(t *testing.T) {
 
 		query := "@ivan"
 		expectedName := "Иван Иванов"
+		expectedID := 10
 
 		sqlMock.On("GetUserInfo", ctx, query).
-			Return(expectedName, nil).
+			Return(expectedName, expectedID, nil).
 			Once()
 
 		cacheMock.On("SaveUser", ctx, query, expectedName).
@@ -35,6 +36,7 @@ func TestUsersService_Search(t *testing.T) {
 
 		assert.Equal(t, query, resp.Users[0].Login)
 		assert.Equal(t, expectedName, resp.Users[0].Name)
+		assert.Equal(t, int64(expectedID), resp.Users[0].Id)
 
 		sqlMock.AssertExpectations(t)
 		cacheMock.AssertExpectations(t)
@@ -47,7 +49,7 @@ func TestUsersService_Search(t *testing.T) {
 		sqlErr := errors.New("user not found")
 
 		sqlMock.On("GetUserInfo", ctx, query).
-			Return("", sqlErr).
+			Return("", 0, sqlErr).
 			Once()
 
 		resp, err := svc.Search(ctx, &pb.SearchRequest{Query: query})
@@ -59,14 +61,15 @@ func TestUsersService_Search(t *testing.T) {
 		cacheMock.AssertNotCalled(t, "SaveUser")
 	})
 
-	t.Run("exact match with @ prefix - SaveUser error is ignored? (текущее поведение)", func(t *testing.T) {
+	t.Run("exact match with @ prefix - SaveUser error is ignored", func(t *testing.T) {
 		svc, sqlMock, cacheMock := newTestService()
 
 		query := "@petr"
 		expectedName := "Пётр"
+		expectedID := 5
 
 		sqlMock.On("GetUserInfo", ctx, query).
-			Return(expectedName, nil).
+			Return(expectedName, expectedID, nil).
 			Once()
 
 		cacheMock.On("SaveUser", ctx, query, expectedName).
@@ -77,6 +80,7 @@ func TestUsersService_Search(t *testing.T) {
 		require.NoError(t, err)
 		require.Len(t, resp.Users, 1)
 		assert.Equal(t, expectedName, resp.Users[0].Name)
+		assert.Equal(t, int64(expectedID), resp.Users[0].Id)
 
 		sqlMock.AssertExpectations(t)
 		cacheMock.AssertExpectations(t)
@@ -87,8 +91,8 @@ func TestUsersService_Search(t *testing.T) {
 
 		query := "iva"
 		expectedUsers := []*pb.UserInfo{
-			{Login: "user_ivan", Name: "Иван"},
-			{Login: "user_ivanov", Name: "Иванов"},
+			{Login: "user_ivan", Name: "Иван", Id: 1},
+			{Login: "user_ivanov", Name: "Иванов", Id: 2},
 		}
 
 		cacheMock.On("GetUsers", ctx, query).
@@ -145,9 +149,10 @@ func TestUsersService_Search(t *testing.T) {
 
 		query := "@"
 		expectedName := "Root"
+		expectedID := 1
 
 		sqlMock.On("GetUserInfo", ctx, query).
-			Return(expectedName, nil).
+			Return(expectedName, expectedID, nil).
 			Once()
 		cacheMock.On("SaveUser", ctx, query, expectedName).
 			Return(nil).
@@ -158,6 +163,7 @@ func TestUsersService_Search(t *testing.T) {
 		require.Len(t, resp.Users, 1)
 		assert.Equal(t, "@", resp.Users[0].Login)
 		assert.Equal(t, expectedName, resp.Users[0].Name)
+		assert.Equal(t, int64(expectedID), resp.Users[0].Id)
 
 		sqlMock.AssertExpectations(t)
 		cacheMock.AssertExpectations(t)
@@ -169,7 +175,7 @@ func TestUsersService_Search(t *testing.T) {
 		query := "ivan"
 
 		cacheMock.On("GetUsers", ctx, query).
-			Return([]*pb.UserInfo{{Login: "user_ivan", Name: "Иван"}}, nil).
+			Return([]*pb.UserInfo{{Login: "user_ivan", Name: "Иван", Id: 3}}, nil).
 			Once()
 
 		resp, err := svc.Search(ctx, &pb.SearchRequest{Query: query})

@@ -10,6 +10,6 @@ services:
         DB_PORT: 5432
         DB_USER: postgres
         DB_PASSWORD: 123
-        DB_NAME: project_farm
+        DB_NAME: bubble
       ports:
         - "8086:8086"

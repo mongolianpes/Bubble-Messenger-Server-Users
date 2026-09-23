@@ -19,11 +19,11 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	UsersService_TLS_FullMethodName      = "/users.UsersService/TLS"
-	UsersService_Register_FullMethodName = "/users.UsersService/Register"
-	UsersService_Auth_FullMethodName     = "/users.UsersService/Auth"
-	UsersService_GetKey_FullMethodName   = "/users.UsersService/GetKey"
-	UsersService_Search_FullMethodName   = "/users.UsersService/Search"
+	UsersService_TLS_FullMethodName         = "/users.UsersService/TLS"
+	UsersService_Register_FullMethodName    = "/users.UsersService/Register"
+	UsersService_Auth_FullMethodName        = "/users.UsersService/Auth"
+	UsersService_GetAuthInfo_FullMethodName = "/users.UsersService/GetAuthInfo"
+	UsersService_Search_FullMethodName      = "/users.UsersService/Search"
 )
 
 // UsersServiceClient is the client API for UsersService service.
@@ -33,7 +33,7 @@ type UsersServiceClient interface {
 	TLS(ctx context.Context, in *TLSRequest, opts ...grpc.CallOption) (*TLSResponse, error)
 	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
 	Auth(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*AuthResponse, error)
-	GetKey(ctx context.Context, in *GetKeyRequest, opts ...grpc.CallOption) (*GetKeyResponse, error)
+	GetAuthInfo(ctx context.Context, in *GetAuthInfoRequest, opts ...grpc.CallOption) (*GetAuthInfoResponse, error)
 	Search(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*SearchResponse, error)
 }
 
@@ -75,10 +75,10 @@ func (c *usersServiceClient) Auth(ctx context.Context, in *AuthRequest, opts ...
 	return out, nil
 }
 
-func (c *usersServiceClient) GetKey(ctx context.Context, in *GetKeyRequest, opts ...grpc.CallOption) (*GetKeyResponse, error) {
+func (c *usersServiceClient) GetAuthInfo(ctx context.Context, in *GetAuthInfoRequest, opts ...grpc.CallOption) (*GetAuthInfoResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetKeyResponse)
-	err := c.cc.Invoke(ctx, UsersService_GetKey_FullMethodName, in, out, cOpts...)
+	out := new(GetAuthInfoResponse)
+	err := c.cc.Invoke(ctx, UsersService_GetAuthInfo_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -102,7 +102,7 @@ type UsersServiceServer interface {
 	TLS(context.Context, *TLSRequest) (*TLSResponse, error)
 	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
 	Auth(context.Context, *AuthRequest) (*AuthResponse, error)
-	GetKey(context.Context, *GetKeyRequest) (*GetKeyResponse, error)
+	GetAuthInfo(context.Context, *GetAuthInfoRequest) (*GetAuthInfoResponse, error)
 	Search(context.Context, *SearchRequest) (*SearchResponse, error)
 	mustEmbedUnimplementedUsersServiceServer()
 }
@@ -123,8 +123,8 @@ func (UnimplementedUsersServiceServer) Register(context.Context, *RegisterReques
 func (UnimplementedUsersServiceServer) Auth(context.Context, *AuthRequest) (*AuthResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Auth not implemented")
 }
-func (UnimplementedUsersServiceServer) GetKey(context.Context, *GetKeyRequest) (*GetKeyResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method GetKey not implemented")
+func (UnimplementedUsersServiceServer) GetAuthInfo(context.Context, *GetAuthInfoRequest) (*GetAuthInfoResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetAuthInfo not implemented")
 }
 func (UnimplementedUsersServiceServer) Search(context.Context, *SearchRequest) (*SearchResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Search not implemented")
@@ -204,20 +204,20 @@ func _UsersService_Auth_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UsersService_GetKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetKeyRequest)
+func _UsersService_GetAuthInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAuthInfoRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UsersServiceServer).GetKey(ctx, in)
+		return srv.(UsersServiceServer).GetAuthInfo(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: UsersService_GetKey_FullMethodName,
+		FullMethod: UsersService_GetAuthInfo_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UsersServiceServer).GetKey(ctx, req.(*GetKeyRequest))
+		return srv.(UsersServiceServer).GetAuthInfo(ctx, req.(*GetAuthInfoRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -260,8 +260,8 @@ var UsersService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _UsersService_Auth_Handler,
 		},
 		{
-			MethodName: "GetKey",
-			Handler:    _UsersService_GetKey_Handler,
+			MethodName: "GetAuthInfo",
+			Handler:    _UsersService_GetAuthInfo_Handler,
 		},
 		{
 			MethodName: "Search",

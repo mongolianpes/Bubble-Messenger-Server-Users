@@ -36,12 +36,13 @@ message AuthResponse {
   string key = 2;
 }
 
-message GetKeyRequest {
+message GetAuthInfoRequest {
   string device = 1;
 }
 
-message GetKeyResponse {
+message GetAuthInfoResponse {
   string key = 1;
+  int64 user_id = 2;
 }
 
 message SearchRequest {
@@ -51,6 +52,7 @@ message SearchRequest {
 message UserInfo {
   string login = 1;
   string name = 2;
+  int64 id = 3;
 }
 
 message SearchResponse {
@@ -61,6 +63,6 @@ service UsersService {
   rpc TLS(TLSRequest) returns (TLSResponse);
   rpc Register(RegisterRequest) returns (RegisterResponse);
   rpc Auth(AuthRequest) returns (AuthResponse);
-  rpc GetKey(GetKeyRequest) returns (GetKeyResponse);
+  rpc GetAuthInfo(GetAuthInfoRequest) returns (GetAuthInfoResponse);
   rpc Search(SearchRequest) returns (SearchResponse);
 }

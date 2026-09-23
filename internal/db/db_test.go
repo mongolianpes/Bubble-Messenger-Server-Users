@@ -19,7 +19,7 @@ func getTestDSN() string {
 	port := envOrDefault("TEST_DB_PORT", "5432")
 	user := envOrDefault("TEST_DB_USER", "postgres")
 	password := envOrDefault("TEST_DB_PASSWORD", "123")
-	dbname := envOrDefault("TEST_DB_NAME", "project_farm")
+	dbname := envOrDefault("TEST_DB_NAME", "bubble")
 
 	return fmt.Sprintf(
 		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
@@ -60,7 +60,7 @@ func generateTestHashedPass() string {
 	return string(hashedInputPassword)
 }
 
-func TestPostgresStorage_RegisterUser(t *testing.T) {
+func TestRegisterUser(t *testing.T) {
 	db, storage := setupTestDB(t)
 	defer db.Close()
 
@@ -92,7 +92,7 @@ func TestPostgresStorage_RegisterUser(t *testing.T) {
 	})
 }
 
-func TestPostgresStorage_GetPassword(t *testing.T) {
+func TestGetPassword(t *testing.T) {
 	db, storage := setupTestDB(t)
 	defer db.Close()
 
@@ -115,25 +115,27 @@ func TestPostgresStorage_GetPassword(t *testing.T) {
 	})
 }
 
-func TestPostgresStorage_GetUserInfo(t *testing.T) {
+func TestGetUserInfo(t *testing.T) {
 	db, storage := setupTestDB(t)
 	defer db.Close()
 
 	ctx := context.Background()
-
 	hashedPass := generateTestHashedPass()
 
 	t.Run("success", func(t *testing.T) {
 		require.NoError(t, storage.RegisterUser(ctx, "olga", "Ольга", hashedPass))
 
-		name, err := storage.GetUserInfo(ctx, "olga")
+		name, id, err := storage.GetUserInfo(ctx, "olga")
 		require.NoError(t, err)
 		assert.Equal(t, "Ольга", name)
+		assert.Greater(t, id, 0)
 	})
 
 	t.Run("user not found", func(t *testing.T) {
-		_, err := storage.GetUserInfo(ctx, "ghost")
+		name, id, err := storage.GetUserInfo(ctx, "ghost")
 		require.Error(t, err)
 		assert.ErrorIs(t, err, sql.ErrNoRows)
+		assert.Equal(t, "", name)
+		assert.Equal(t, 0, id)
 	})
 }

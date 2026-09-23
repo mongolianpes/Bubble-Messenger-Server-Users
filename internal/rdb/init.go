@@ -15,8 +15,8 @@ type RedisStorage struct {
 }
 
 type CacheStorage interface {
-	SetSession(ctx context.Context, sessionKey, userID string) error
-	GetKey(ctx context.Context, device string) (string, error)
+	SetSession(ctx context.Context, device, key string, id int) error
+	GetAuthInfo(ctx context.Context, device string) (string, int, error)
 	GetUsers(ctx context.Context, login string) (result []*pb.UserInfo, err error)
 	SaveUser(ctx context.Context, login, name string) error
 	Close() error

@@ -349,27 +349,27 @@ func (x *AuthResponse) GetKey() string {
 	return ""
 }
 
-type GetKeyRequest struct {
+type GetAuthInfoRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Device        string                 `protobuf:"bytes,1,opt,name=device,proto3" json:"device,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GetKeyRequest) Reset() {
-	*x = GetKeyRequest{}
+func (x *GetAuthInfoRequest) Reset() {
+	*x = GetAuthInfoRequest{}
 	mi := &file_users_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GetKeyRequest) String() string {
+func (x *GetAuthInfoRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetKeyRequest) ProtoMessage() {}
+func (*GetAuthInfoRequest) ProtoMessage() {}
 
-func (x *GetKeyRequest) ProtoReflect() protoreflect.Message {
+func (x *GetAuthInfoRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_users_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -381,39 +381,40 @@ func (x *GetKeyRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GetKeyRequest.ProtoReflect.Descriptor instead.
-func (*GetKeyRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetAuthInfoRequest.ProtoReflect.Descriptor instead.
+func (*GetAuthInfoRequest) Descriptor() ([]byte, []int) {
 	return file_users_proto_rawDescGZIP(), []int{6}
 }
 
-func (x *GetKeyRequest) GetDevice() string {
+func (x *GetAuthInfoRequest) GetDevice() string {
 	if x != nil {
 		return x.Device
 	}
 	return ""
 }
 
-type GetKeyResponse struct {
+type GetAuthInfoResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Key           string                 `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
+	UserId        int64                  `protobuf:"varint,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GetKeyResponse) Reset() {
-	*x = GetKeyResponse{}
+func (x *GetAuthInfoResponse) Reset() {
+	*x = GetAuthInfoResponse{}
 	mi := &file_users_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GetKeyResponse) String() string {
+func (x *GetAuthInfoResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetKeyResponse) ProtoMessage() {}
+func (*GetAuthInfoResponse) ProtoMessage() {}
 
-func (x *GetKeyResponse) ProtoReflect() protoreflect.Message {
+func (x *GetAuthInfoResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_users_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -425,16 +426,23 @@ func (x *GetKeyResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GetKeyResponse.ProtoReflect.Descriptor instead.
-func (*GetKeyResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetAuthInfoResponse.ProtoReflect.Descriptor instead.
+func (*GetAuthInfoResponse) Descriptor() ([]byte, []int) {
 	return file_users_proto_rawDescGZIP(), []int{7}
 }
 
-func (x *GetKeyResponse) GetKey() string {
+func (x *GetAuthInfoResponse) GetKey() string {
 	if x != nil {
 		return x.Key
 	}
 	return ""
+}
+
+func (x *GetAuthInfoResponse) GetUserId() int64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
 }
 
 type SearchRequest struct {
@@ -485,6 +493,7 @@ type UserInfo struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Login         string                 `protobuf:"bytes,1,opt,name=login,proto3" json:"login,omitempty"`
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Id            int64                  `protobuf:"varint,3,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -531,6 +540,13 @@ func (x *UserInfo) GetName() string {
 		return x.Name
 	}
 	return ""
+}
+
+func (x *UserInfo) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
 }
 
 type SearchResponse struct {
@@ -602,23 +618,25 @@ const file_users_proto_rawDesc = "" +
 	"\x06device\x18\x03 \x01(\tR\x06device\"4\n" +
 	"\fAuthResponse\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x10\n" +
-	"\x03key\x18\x02 \x01(\tR\x03key\"'\n" +
-	"\rGetKeyRequest\x12\x16\n" +
-	"\x06device\x18\x01 \x01(\tR\x06device\"\"\n" +
-	"\x0eGetKeyResponse\x12\x10\n" +
-	"\x03key\x18\x01 \x01(\tR\x03key\"%\n" +
+	"\x03key\x18\x02 \x01(\tR\x03key\",\n" +
+	"\x12GetAuthInfoRequest\x12\x16\n" +
+	"\x06device\x18\x01 \x01(\tR\x06device\"@\n" +
+	"\x13GetAuthInfoResponse\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x17\n" +
+	"\auser_id\x18\x02 \x01(\x03R\x06userId\"%\n" +
 	"\rSearchRequest\x12\x14\n" +
-	"\x05query\x18\x01 \x01(\tR\x05query\"4\n" +
+	"\x05query\x18\x01 \x01(\tR\x05query\"D\n" +
 	"\bUserInfo\x12\x14\n" +
 	"\x05login\x18\x01 \x01(\tR\x05login\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name\"7\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12\x0e\n" +
+	"\x02id\x18\x03 \x01(\x03R\x02id\"7\n" +
 	"\x0eSearchResponse\x12%\n" +
-	"\x05users\x18\x01 \x03(\v2\x0f.users.UserInfoR\x05users2\x98\x02\n" +
+	"\x05users\x18\x01 \x03(\v2\x0f.users.UserInfoR\x05users2\xa7\x02\n" +
 	"\fUsersService\x12,\n" +
 	"\x03TLS\x12\x11.users.TLSRequest\x1a\x12.users.TLSResponse\x12;\n" +
 	"\bRegister\x12\x16.users.RegisterRequest\x1a\x17.users.RegisterResponse\x12/\n" +
-	"\x04Auth\x12\x12.users.AuthRequest\x1a\x13.users.AuthResponse\x125\n" +
-	"\x06GetKey\x12\x14.users.GetKeyRequest\x1a\x15.users.GetKeyResponse\x125\n" +
+	"\x04Auth\x12\x12.users.AuthRequest\x1a\x13.users.AuthResponse\x12D\n" +
+	"\vGetAuthInfo\x12\x19.users.GetAuthInfoRequest\x1a\x1a.users.GetAuthInfoResponse\x125\n" +
 	"\x06Search\x12\x14.users.SearchRequest\x1a\x15.users.SearchResponseB\x03Z\x01.b\x06proto3"
 
 var (
@@ -635,29 +653,29 @@ func file_users_proto_rawDescGZIP() []byte {
 
 var file_users_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
 var file_users_proto_goTypes = []any{
-	(*TLSRequest)(nil),       // 0: users.TLSRequest
-	(*TLSResponse)(nil),      // 1: users.TLSResponse
-	(*RegisterRequest)(nil),  // 2: users.RegisterRequest
-	(*RegisterResponse)(nil), // 3: users.RegisterResponse
-	(*AuthRequest)(nil),      // 4: users.AuthRequest
-	(*AuthResponse)(nil),     // 5: users.AuthResponse
-	(*GetKeyRequest)(nil),    // 6: users.GetKeyRequest
-	(*GetKeyResponse)(nil),   // 7: users.GetKeyResponse
-	(*SearchRequest)(nil),    // 8: users.SearchRequest
-	(*UserInfo)(nil),         // 9: users.UserInfo
-	(*SearchResponse)(nil),   // 10: users.SearchResponse
+	(*TLSRequest)(nil),          // 0: users.TLSRequest
+	(*TLSResponse)(nil),         // 1: users.TLSResponse
+	(*RegisterRequest)(nil),     // 2: users.RegisterRequest
+	(*RegisterResponse)(nil),    // 3: users.RegisterResponse
+	(*AuthRequest)(nil),         // 4: users.AuthRequest
+	(*AuthResponse)(nil),        // 5: users.AuthResponse
+	(*GetAuthInfoRequest)(nil),  // 6: users.GetAuthInfoRequest
+	(*GetAuthInfoResponse)(nil), // 7: users.GetAuthInfoResponse
+	(*SearchRequest)(nil),       // 8: users.SearchRequest
+	(*UserInfo)(nil),            // 9: users.UserInfo
+	(*SearchResponse)(nil),      // 10: users.SearchResponse
 }
 var file_users_proto_depIdxs = []int32{
 	9,  // 0: users.SearchResponse.users:type_name -> users.UserInfo
 	0,  // 1: users.UsersService.TLS:input_type -> users.TLSRequest
 	2,  // 2: users.UsersService.Register:input_type -> users.RegisterRequest
 	4,  // 3: users.UsersService.Auth:input_type -> users.AuthRequest
-	6,  // 4: users.UsersService.GetKey:input_type -> users.GetKeyRequest
+	6,  // 4: users.UsersService.GetAuthInfo:input_type -> users.GetAuthInfoRequest
 	8,  // 5: users.UsersService.Search:input_type -> users.SearchRequest
 	1,  // 6: users.UsersService.TLS:output_type -> users.TLSResponse
 	3,  // 7: users.UsersService.Register:output_type -> users.RegisterResponse
 	5,  // 8: users.UsersService.Auth:output_type -> users.AuthResponse
-	7,  // 9: users.UsersService.GetKey:output_type -> users.GetKeyResponse
+	7,  // 9: users.UsersService.GetAuthInfo:output_type -> users.GetAuthInfoResponse
 	10, // 10: users.UsersService.Search:output_type -> users.SearchResponse
 	6,  // [6:11] is the sub-list for method output_type
 	1,  // [1:6] is the sub-list for method input_type

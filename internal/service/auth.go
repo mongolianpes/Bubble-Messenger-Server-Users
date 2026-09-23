@@ -139,9 +139,9 @@ func (s *UsersService) Register(ctx context.Context, req *pb.RegisterRequest) (*
 		return nil, err
 	}
 
-	if err := s.cacheStorage.SetSession(ctx, req.Device, key); err != nil {
-		return nil, err
-	}
+	// if err := s.cacheStorage.SetSession(ctx, req.Device, key); err != nil {
+	// 	return nil, err
+	// }
 
 	hashedPassword, err := crypto.HashString(req.Password, true)
 	if err != nil {
@@ -189,20 +189,26 @@ func (s *UsersService) Auth(ctx context.Context, req *pb.AuthRequest) (*pb.AuthR
 		return resp, errors.New("Incorrect login or password")
 	}
 
-	if err := s.cacheStorage.SetSession(ctx, req.Device, key); err != nil {
+	_, id, err := s.SQLStorage.GetUserInfo(ctx, req.Login)
+	if err != nil {
+		return resp, err
+	}
+
+	if err := s.cacheStorage.SetSession(ctx, req.Device, key, id); err != nil {
 		return resp, err
 	}
 
 	return resp, nil
 }
 
-func (s *UsersService) GetKey(ctx context.Context, req *pb.GetKeyRequest) (*pb.GetKeyResponse, error) {
-	key, err := s.cacheStorage.GetKey(ctx, req.Device)
+func (s *UsersService) GetAuthInfo(ctx context.Context, req *pb.GetAuthInfoRequest) (*pb.GetAuthInfoResponse, error) {
+	key, id, err := s.cacheStorage.GetAuthInfo(ctx, req.Device)
 	if err != nil {
 		return nil, err
 	}
 
-	return &pb.GetKeyResponse{
-		Key: key,
+	return &pb.GetAuthInfoResponse{
+		Key:    key,
+		UserId: int64(id),
 	}, nil
 }
