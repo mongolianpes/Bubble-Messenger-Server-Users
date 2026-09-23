@@ -613,8 +613,8 @@ const file_users_proto_rawDesc = "" +
 	"\x05login\x18\x01 \x01(\tR\x05login\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\"7\n" +
 	"\x0eSearchResponse\x12%\n" +
-	"\x05users\x18\x01 \x03(\v2\x0f.users.UserInfoR\x05users2\x91\x02\n" +
-	"\x05Users\x12,\n" +
+	"\x05users\x18\x01 \x03(\v2\x0f.users.UserInfoR\x05users2\x98\x02\n" +
+	"\fUsersService\x12,\n" +
 	"\x03TLS\x12\x11.users.TLSRequest\x1a\x12.users.TLSResponse\x12;\n" +
 	"\bRegister\x12\x16.users.RegisterRequest\x1a\x17.users.RegisterResponse\x12/\n" +
 	"\x04Auth\x12\x12.users.AuthRequest\x1a\x13.users.AuthResponse\x125\n" +
@@ -649,16 +649,16 @@ var file_users_proto_goTypes = []any{
 }
 var file_users_proto_depIdxs = []int32{
 	9,  // 0: users.SearchResponse.users:type_name -> users.UserInfo
-	0,  // 1: users.Users.TLS:input_type -> users.TLSRequest
-	2,  // 2: users.Users.Register:input_type -> users.RegisterRequest
-	4,  // 3: users.Users.Auth:input_type -> users.AuthRequest
-	6,  // 4: users.Users.GetKey:input_type -> users.GetKeyRequest
-	8,  // 5: users.Users.Search:input_type -> users.SearchRequest
-	1,  // 6: users.Users.TLS:output_type -> users.TLSResponse
-	3,  // 7: users.Users.Register:output_type -> users.RegisterResponse
-	5,  // 8: users.Users.Auth:output_type -> users.AuthResponse
-	7,  // 9: users.Users.GetKey:output_type -> users.GetKeyResponse
-	10, // 10: users.Users.Search:output_type -> users.SearchResponse
+	0,  // 1: users.UsersService.TLS:input_type -> users.TLSRequest
+	2,  // 2: users.UsersService.Register:input_type -> users.RegisterRequest
+	4,  // 3: users.UsersService.Auth:input_type -> users.AuthRequest
+	6,  // 4: users.UsersService.GetKey:input_type -> users.GetKeyRequest
+	8,  // 5: users.UsersService.Search:input_type -> users.SearchRequest
+	1,  // 6: users.UsersService.TLS:output_type -> users.TLSResponse
+	3,  // 7: users.UsersService.Register:output_type -> users.RegisterResponse
+	5,  // 8: users.UsersService.Auth:output_type -> users.AuthResponse
+	7,  // 9: users.UsersService.GetKey:output_type -> users.GetKeyResponse
+	10, // 10: users.UsersService.Search:output_type -> users.SearchResponse
 	6,  // [6:11] is the sub-list for method output_type
 	1,  // [1:6] is the sub-list for method input_type
 	1,  // [1:1] is the sub-list for extension type_name

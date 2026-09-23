@@ -57,7 +57,7 @@ message SearchResponse {
   repeated UserInfo users = 1;
 }
 
-service Users {
+service UsersService {
   rpc TLS(TLSRequest) returns (TLSResponse);
   rpc Register(RegisterRequest) returns (RegisterResponse);
   rpc Auth(AuthRequest) returns (AuthResponse);
