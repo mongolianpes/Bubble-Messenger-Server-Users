@@ -30,7 +30,7 @@ func main() {
 	}
 
 	grpcServer := grpc.NewServer()
-	pb.RegisterUsersServer(grpcServer, service.NewUsersService(sessionStorage, usersStorage, activeUsers))
+	pb.RegisterUsersServiceServer(grpcServer, service.NewUsersService(sessionStorage, usersStorage, activeUsers))
 
 	if err := grpcServer.Serve(lis); err != nil {
 		panic(err)

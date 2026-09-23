@@ -7,7 +7,7 @@ import (
 )
 
 type UsersService struct {
-	pb.UnimplementedUsersServer
+	pb.UnimplementedUsersServiceServer
 	cacheStorage rdb.CacheStorage
 	SQLStorage   db.SQLStorage
 	activeUsers  *ActiveUsers
