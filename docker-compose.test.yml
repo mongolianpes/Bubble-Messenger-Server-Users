@@ -6,7 +6,7 @@ services:
       container_name: userstest
       restart: unless-stopped
       environment:
-        DB_HOST: dbtestusersformain
+        DB_HOST: localhost
         DB_PORT: 5432
         DB_USER: postgres
         DB_PASSWORD: 123

@@ -581,7 +581,7 @@ var File_users_proto protoreflect.FileDescriptor
 
 const file_users_proto_rawDesc = "" +
 	"\n" +
-	"\vusers.proto\x12\x04auth\"m\n" +
+	"\vusers.proto\x12\x05users\"m\n" +
 	"\n" +
 	"TLSRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12*\n" +
@@ -611,15 +611,15 @@ const file_users_proto_rawDesc = "" +
 	"\x05query\x18\x01 \x01(\tR\x05query\"4\n" +
 	"\bUserInfo\x12\x14\n" +
 	"\x05login\x18\x01 \x01(\tR\x05login\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name\"6\n" +
-	"\x0eSearchResponse\x12$\n" +
-	"\x05users\x18\x01 \x03(\v2\x0e.auth.UserInfoR\x05users2\x87\x02\n" +
-	"\x05Users\x12*\n" +
-	"\x03TLS\x12\x10.auth.TLSRequest\x1a\x11.auth.TLSResponse\x129\n" +
-	"\bRegister\x12\x15.auth.RegisterRequest\x1a\x16.auth.RegisterResponse\x12-\n" +
-	"\x04Auth\x12\x11.auth.AuthRequest\x1a\x12.auth.AuthResponse\x123\n" +
-	"\x06GetKey\x12\x13.auth.GetKeyRequest\x1a\x14.auth.GetKeyResponse\x123\n" +
-	"\x06Search\x12\x13.auth.SearchRequest\x1a\x14.auth.SearchResponseB\x03Z\x01.b\x06proto3"
+	"\x04name\x18\x02 \x01(\tR\x04name\"7\n" +
+	"\x0eSearchResponse\x12%\n" +
+	"\x05users\x18\x01 \x03(\v2\x0f.users.UserInfoR\x05users2\x91\x02\n" +
+	"\x05Users\x12,\n" +
+	"\x03TLS\x12\x11.users.TLSRequest\x1a\x12.users.TLSResponse\x12;\n" +
+	"\bRegister\x12\x16.users.RegisterRequest\x1a\x17.users.RegisterResponse\x12/\n" +
+	"\x04Auth\x12\x12.users.AuthRequest\x1a\x13.users.AuthResponse\x125\n" +
+	"\x06GetKey\x12\x14.users.GetKeyRequest\x1a\x15.users.GetKeyResponse\x125\n" +
+	"\x06Search\x12\x14.users.SearchRequest\x1a\x15.users.SearchResponseB\x03Z\x01.b\x06proto3"
 
 var (
 	file_users_proto_rawDescOnce sync.Once
@@ -635,30 +635,30 @@ func file_users_proto_rawDescGZIP() []byte {
 
 var file_users_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
 var file_users_proto_goTypes = []any{
-	(*TLSRequest)(nil),       // 0: auth.TLSRequest
-	(*TLSResponse)(nil),      // 1: auth.TLSResponse
-	(*RegisterRequest)(nil),  // 2: auth.RegisterRequest
-	(*RegisterResponse)(nil), // 3: auth.RegisterResponse
-	(*AuthRequest)(nil),      // 4: auth.AuthRequest
-	(*AuthResponse)(nil),     // 5: auth.AuthResponse
-	(*GetKeyRequest)(nil),    // 6: auth.GetKeyRequest
-	(*GetKeyResponse)(nil),   // 7: auth.GetKeyResponse
-	(*SearchRequest)(nil),    // 8: auth.SearchRequest
-	(*UserInfo)(nil),         // 9: auth.UserInfo
-	(*SearchResponse)(nil),   // 10: auth.SearchResponse
+	(*TLSRequest)(nil),       // 0: users.TLSRequest
+	(*TLSResponse)(nil),      // 1: users.TLSResponse
+	(*RegisterRequest)(nil),  // 2: users.RegisterRequest
+	(*RegisterResponse)(nil), // 3: users.RegisterResponse
+	(*AuthRequest)(nil),      // 4: users.AuthRequest
+	(*AuthResponse)(nil),     // 5: users.AuthResponse
+	(*GetKeyRequest)(nil),    // 6: users.GetKeyRequest
+	(*GetKeyResponse)(nil),   // 7: users.GetKeyResponse
+	(*SearchRequest)(nil),    // 8: users.SearchRequest
+	(*UserInfo)(nil),         // 9: users.UserInfo
+	(*SearchResponse)(nil),   // 10: users.SearchResponse
 }
 var file_users_proto_depIdxs = []int32{
-	9,  // 0: auth.SearchResponse.users:type_name -> auth.UserInfo
-	0,  // 1: auth.Users.TLS:input_type -> auth.TLSRequest
-	2,  // 2: auth.Users.Register:input_type -> auth.RegisterRequest
-	4,  // 3: auth.Users.Auth:input_type -> auth.AuthRequest
-	6,  // 4: auth.Users.GetKey:input_type -> auth.GetKeyRequest
-	8,  // 5: auth.Users.Search:input_type -> auth.SearchRequest
-	1,  // 6: auth.Users.TLS:output_type -> auth.TLSResponse
-	3,  // 7: auth.Users.Register:output_type -> auth.RegisterResponse
-	5,  // 8: auth.Users.Auth:output_type -> auth.AuthResponse
-	7,  // 9: auth.Users.GetKey:output_type -> auth.GetKeyResponse
-	10, // 10: auth.Users.Search:output_type -> auth.SearchResponse
+	9,  // 0: users.SearchResponse.users:type_name -> users.UserInfo
+	0,  // 1: users.Users.TLS:input_type -> users.TLSRequest
+	2,  // 2: users.Users.Register:input_type -> users.RegisterRequest
+	4,  // 3: users.Users.Auth:input_type -> users.AuthRequest
+	6,  // 4: users.Users.GetKey:input_type -> users.GetKeyRequest
+	8,  // 5: users.Users.Search:input_type -> users.SearchRequest
+	1,  // 6: users.Users.TLS:output_type -> users.TLSResponse
+	3,  // 7: users.Users.Register:output_type -> users.RegisterResponse
+	5,  // 8: users.Users.Auth:output_type -> users.AuthResponse
+	7,  // 9: users.Users.GetKey:output_type -> users.GetKeyResponse
+	10, // 10: users.Users.Search:output_type -> users.SearchResponse
 	6,  // [6:11] is the sub-list for method output_type
 	1,  // [1:6] is the sub-list for method input_type
 	1,  // [1:1] is the sub-list for extension type_name

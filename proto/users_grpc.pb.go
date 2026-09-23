@@ -19,11 +19,11 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Users_TLS_FullMethodName      = "/auth.Users/TLS"
-	Users_Register_FullMethodName = "/auth.Users/Register"
-	Users_Auth_FullMethodName     = "/auth.Users/Auth"
-	Users_GetKey_FullMethodName   = "/auth.Users/GetKey"
-	Users_Search_FullMethodName   = "/auth.Users/Search"
+	Users_TLS_FullMethodName      = "/users.Users/TLS"
+	Users_Register_FullMethodName = "/users.Users/Register"
+	Users_Auth_FullMethodName     = "/users.Users/Auth"
+	Users_GetKey_FullMethodName   = "/users.Users/GetKey"
+	Users_Search_FullMethodName   = "/users.Users/Search"
 )
 
 // UsersClient is the client API for Users service.
@@ -244,7 +244,7 @@ func _Users_Search_Handler(srv interface{}, ctx context.Context, dec func(interf
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Users_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "auth.Users",
+	ServiceName: "users.Users",
 	HandlerType: (*UsersServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
