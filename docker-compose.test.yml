@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  userstest:
+      build: .
+      container_name: userstest
+      restart: unless-stopped
+      environment:
+        DB_HOST: dbtestusersformain
+        DB_PORT: 5432
+        DB_USER: postgres
+        DB_PASSWORD: 123
+        DB_NAME: project_farm
+      ports:
+        - "8086:8086"

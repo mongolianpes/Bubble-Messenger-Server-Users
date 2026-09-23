@@ -5,7 +5,7 @@ import "context"
 const (
 	registerUser = "INSERT INTO users (login, name, password) VALUES ($1, $2, $3)"
 	getPassword  = "SELECT password FROM users WHERE login = $1"
-	getUserInfo  = "SELECT login, name FROM users WHRER login = $1"
+	getUserInfo  = "SELECT name FROM users WHERE login = $1"
 )
 
 func (s *PostgresStorage) RegisterUser(ctx context.Context, login, name, password string) error {
