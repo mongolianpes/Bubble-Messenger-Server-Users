@@ -58,6 +58,11 @@ func (m *MockCacheStorage) SaveUser(ctx context.Context, login, name string) err
 	return args.Error(0)
 }
 
+func (m *MockCacheStorage) GetUser(ctx context.Context, login string) (string, error) {
+	args := m.Called(ctx, login)
+	return args.String(0), args.Error(1)
+}
+
 func (m *MockCacheStorage) Close() error {
 	return nil
 }

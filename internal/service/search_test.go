@@ -14,19 +14,15 @@ import (
 func TestSearch(t *testing.T) {
 	ctx := context.Background()
 
-	t.Run("exact match with @ prefix - success", func(t *testing.T) {
+	t.Run("exact match - cache hit", func(t *testing.T) {
 		svc, sqlMock, cacheMock := newTestService()
 
 		query := "@ivan"
+		login := "ivan"
 		expectedName := "Иван Иванов"
-		expectedID := 10
 
-		sqlMock.On("GetUserInfo", ctx, query).
-			Return(expectedName, expectedID, nil).
-			Once()
-
-		cacheMock.On("SaveUser", ctx, query, expectedName).
-			Return(nil).
+		cacheMock.On("GetUser", ctx, login).
+			Return(expectedName, nil).
 			Once()
 
 		resp, err := svc.Search(ctx, &pb.SearchRequest{Query: query})
@@ -34,7 +30,40 @@ func TestSearch(t *testing.T) {
 		require.NotNil(t, resp)
 		require.Len(t, resp.Users, 1)
 
-		assert.Equal(t, query, resp.Users[0].Login)
+		assert.Equal(t, login, resp.Users[0].Login)
+		assert.Equal(t, expectedName, resp.Users[0].Name)
+		assert.Equal(t, int64(0), resp.Users[0].Id)
+
+		sqlMock.AssertNotCalled(t, "GetUserInfo")
+		cacheMock.AssertNotCalled(t, "SaveUser")
+		cacheMock.AssertExpectations(t)
+	})
+
+	t.Run("exact match - cache miss, SQL success", func(t *testing.T) {
+		svc, sqlMock, cacheMock := newTestService()
+
+		query := "@ivan"
+		login := "ivan"
+		expectedName := "Иван Иванов"
+		expectedID := 10
+
+		cacheMock.On("GetUser", ctx, login).
+			Return("", errors.New("not found")).
+			Once()
+
+		sqlMock.On("GetUserInfo", ctx, login).
+			Return(expectedName, expectedID, nil).
+			Once()
+
+		cacheMock.On("SaveUser", ctx, login, expectedName).
+			Return(nil).
+			Once()
+
+		resp, err := svc.Search(ctx, &pb.SearchRequest{Query: query})
+		require.NoError(t, err)
+		require.Len(t, resp.Users, 1)
+
+		assert.Equal(t, login, resp.Users[0].Login)
 		assert.Equal(t, expectedName, resp.Users[0].Name)
 		assert.Equal(t, int64(expectedID), resp.Users[0].Id)
 
@@ -42,13 +71,18 @@ func TestSearch(t *testing.T) {
 		cacheMock.AssertExpectations(t)
 	})
 
-	t.Run("exact match with @ prefix - SQL error", func(t *testing.T) {
+	t.Run("exact match - cache miss, SQL error", func(t *testing.T) {
 		svc, sqlMock, cacheMock := newTestService()
 
 		query := "@unknown"
+		login := "unknown"
 		sqlErr := errors.New("user not found")
 
-		sqlMock.On("GetUserInfo", ctx, query).
+		cacheMock.On("GetUser", ctx, login).
+			Return("", errors.New("not found")).
+			Once()
+
+		sqlMock.On("GetUserInfo", ctx, login).
 			Return("", 0, sqlErr).
 			Once()
 
@@ -61,18 +95,23 @@ func TestSearch(t *testing.T) {
 		cacheMock.AssertNotCalled(t, "SaveUser")
 	})
 
-	t.Run("exact match with @ prefix - SaveUser error is ignored", func(t *testing.T) {
+	t.Run("exact match - SaveUser error is ignored", func(t *testing.T) {
 		svc, sqlMock, cacheMock := newTestService()
 
 		query := "@petr"
+		login := "petr"
 		expectedName := "Пётр"
 		expectedID := 5
 
-		sqlMock.On("GetUserInfo", ctx, query).
+		cacheMock.On("GetUser", ctx, login).
+			Return("", errors.New("not found")).
+			Once()
+
+		sqlMock.On("GetUserInfo", ctx, login).
 			Return(expectedName, expectedID, nil).
 			Once()
 
-		cacheMock.On("SaveUser", ctx, query, expectedName).
+		cacheMock.On("SaveUser", ctx, login, expectedName).
 			Return(errors.New("redis is down")).
 			Once()
 
@@ -91,8 +130,8 @@ func TestSearch(t *testing.T) {
 
 		query := "iva"
 		expectedUsers := []*pb.UserInfo{
-			{Login: "user_ivan", Name: "Иван", Id: 1},
-			{Login: "user_ivanov", Name: "Иванов", Id: 2},
+			{Login: "user_ivan", Name: "Иван"},
+			{Login: "user_ivanov", Name: "Иванов"},
 		}
 
 		cacheMock.On("GetUsers", ctx, query).
@@ -101,11 +140,11 @@ func TestSearch(t *testing.T) {
 
 		resp, err := svc.Search(ctx, &pb.SearchRequest{Query: query})
 		require.NoError(t, err)
-		require.NotNil(t, resp)
 		assert.Equal(t, expectedUsers, resp.Users)
 
 		cacheMock.AssertExpectations(t)
 		sqlMock.AssertNotCalled(t, "GetUserInfo")
+		cacheMock.AssertNotCalled(t, "GetUser")
 	})
 
 	t.Run("partial search - cache error", func(t *testing.T) {
@@ -131,51 +170,23 @@ func TestSearch(t *testing.T) {
 		svc, _, cacheMock := newTestService()
 
 		query := "xyz"
-
 		cacheMock.On("GetUsers", ctx, query).
 			Return([]*pb.UserInfo{}, nil).
 			Once()
 
 		resp, err := svc.Search(ctx, &pb.SearchRequest{Query: query})
 		require.NoError(t, err)
-		require.NotNil(t, resp)
 		assert.Empty(t, resp.Users)
 
 		cacheMock.AssertExpectations(t)
 	})
 
-	t.Run("query is just @", func(t *testing.T) {
-		svc, sqlMock, cacheMock := newTestService()
-
-		query := "@"
-		expectedName := "Root"
-		expectedID := 1
-
-		sqlMock.On("GetUserInfo", ctx, query).
-			Return(expectedName, expectedID, nil).
-			Once()
-		cacheMock.On("SaveUser", ctx, query, expectedName).
-			Return(nil).
-			Once()
-
-		resp, err := svc.Search(ctx, &pb.SearchRequest{Query: query})
-		require.NoError(t, err)
-		require.Len(t, resp.Users, 1)
-		assert.Equal(t, "@", resp.Users[0].Login)
-		assert.Equal(t, expectedName, resp.Users[0].Name)
-		assert.Equal(t, int64(expectedID), resp.Users[0].Id)
-
-		sqlMock.AssertExpectations(t)
-		cacheMock.AssertExpectations(t)
-	})
-
-	t.Run("query without @ goes to cache even if looks like login", func(t *testing.T) {
+	t.Run("query without @ goes to GetUsers", func(t *testing.T) {
 		svc, sqlMock, cacheMock := newTestService()
 
 		query := "ivan"
-
 		cacheMock.On("GetUsers", ctx, query).
-			Return([]*pb.UserInfo{{Login: "user_ivan", Name: "Иван", Id: 3}}, nil).
+			Return([]*pb.UserInfo{{Login: "user_ivan", Name: "Иван"}}, nil).
 			Once()
 
 		resp, err := svc.Search(ctx, &pb.SearchRequest{Query: query})
@@ -183,6 +194,7 @@ func TestSearch(t *testing.T) {
 		require.Len(t, resp.Users, 1)
 
 		sqlMock.AssertNotCalled(t, "GetUserInfo")
+		cacheMock.AssertNotCalled(t, "GetUser")
 		cacheMock.AssertExpectations(t)
 	})
 }

@@ -19,6 +19,7 @@ type CacheStorage interface {
 	GetAuthInfo(ctx context.Context, device string) (string, int, error)
 	GetUsers(ctx context.Context, login string) (result []*pb.UserInfo, err error)
 	SaveUser(ctx context.Context, login, name string) error
+	GetUser(ctx context.Context, login string) (string, error)
 	Close() error
 }
 

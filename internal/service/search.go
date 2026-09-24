@@ -10,19 +10,33 @@ const prefixForSearchExactMatch = "@"
 
 func (s *UsersService) Search(ctx context.Context, req *pb.SearchRequest) (*pb.SearchResponse, error) {
 	if strings.HasPrefix(req.Query, prefixForSearchExactMatch) {
-		name, id, err := s.SQLStorage.GetUserInfo(ctx, req.Query)
+		resultUserInfo := []*pb.UserInfo{}
+
+		login := req.Query[1:]
+		name, err := s.cacheStorage.GetUser(ctx, login)
+		if err == nil {
+			resultUserInfo = append(resultUserInfo, &pb.UserInfo{
+				Login: login,
+				Name:  name,
+			})
+
+			return &pb.SearchResponse{
+				Users: resultUserInfo,
+			}, nil
+		}
+
+		name, id, err := s.SQLStorage.GetUserInfo(ctx, login)
 		if err != nil {
 			return nil, err
 		}
 
-		resultUserInfo := []*pb.UserInfo{}
 		resultUserInfo = append(resultUserInfo, &pb.UserInfo{
-			Login: req.Query,
+			Login: login,
 			Name:  name,
 			Id:    int64(id),
 		})
 
-		s.cacheStorage.SaveUser(ctx, req.Query, name)
+		s.cacheStorage.SaveUser(ctx, login, name)
 
 		return &pb.SearchResponse{
 			Users: resultUserInfo,
