@@ -29,6 +29,11 @@ func (m *MockSQLStorage) GetUserInfo(ctx context.Context, login string) (string,
 	return args.String(0), args.Int(1), args.Error(2)
 }
 
+func (m *MockSQLStorage) GetInfoByID(ctx context.Context, id int) (string, string, error) {
+	args := m.Called(ctx, id)
+	return args.String(0), args.String(1), args.Error(2)
+}
+
 // ---------- CacheStorage mock ----------
 
 type MockCacheStorage struct {

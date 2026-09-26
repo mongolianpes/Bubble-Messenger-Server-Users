@@ -139,3 +139,43 @@ func TestGetUserInfo(t *testing.T) {
 		assert.Equal(t, 0, id)
 	})
 }
+
+func TestGetInfoByID(t *testing.T) {
+	db, storage := setupTestDB(t)
+	defer db.Close()
+
+	ctx := context.Background()
+
+	t.Run("success", func(t *testing.T) {
+		const (
+			wantLogin = "testuser"
+			wantName  = "Test User"
+		)
+		hashedPass := generateTestHashedPass()
+
+		var id int
+		err := db.QueryRowContext(ctx, `
+			INSERT INTO users (login, name, password)
+			VALUES ($1, $2, $3)
+			RETURNING id
+		`, wantLogin, wantName, hashedPass).Scan(&id)
+		require.NoError(t, err)
+		require.Positive(t, id)
+
+		gotLogin, gotName, err := storage.GetInfoByID(ctx, id)
+
+		require.NoError(t, err)
+		assert.Equal(t, wantLogin, gotLogin)
+		assert.Equal(t, wantName, gotName)
+	})
+
+	t.Run("not found", func(t *testing.T) {
+		login, name, err := storage.GetInfoByID(ctx, 999999)
+
+		require.Error(t, err)
+		assert.ErrorIs(t, err, sql.ErrNoRows)
+		assert.Empty(t, login)
+		assert.Empty(t, name)
+	})
+
+}

@@ -59,10 +59,20 @@ message SearchResponse {
   repeated UserInfo users = 1;
 }
 
+message GetInfoByIDRequest {
+  int64 id = 1;
+}
+
+message GetInfoByIDResponse {
+  string login = 1;
+  string name = 2;
+}
+
 service UsersService {
   rpc TLS(TLSRequest) returns (TLSResponse);
   rpc Register(RegisterRequest) returns (RegisterResponse);
   rpc Auth(AuthRequest) returns (AuthResponse);
   rpc GetAuthInfo(GetAuthInfoRequest) returns (GetAuthInfoResponse);
   rpc Search(SearchRequest) returns (SearchResponse);
+  rpc GetInfoByID(GetInfoByIDRequest) returns (GetInfoByIDResponse);
 }

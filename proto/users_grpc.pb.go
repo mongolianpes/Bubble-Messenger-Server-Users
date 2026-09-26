@@ -24,6 +24,7 @@ const (
 	UsersService_Auth_FullMethodName        = "/users.UsersService/Auth"
 	UsersService_GetAuthInfo_FullMethodName = "/users.UsersService/GetAuthInfo"
 	UsersService_Search_FullMethodName      = "/users.UsersService/Search"
+	UsersService_GetInfoByID_FullMethodName = "/users.UsersService/GetInfoByID"
 )
 
 // UsersServiceClient is the client API for UsersService service.
@@ -35,6 +36,7 @@ type UsersServiceClient interface {
 	Auth(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*AuthResponse, error)
 	GetAuthInfo(ctx context.Context, in *GetAuthInfoRequest, opts ...grpc.CallOption) (*GetAuthInfoResponse, error)
 	Search(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*SearchResponse, error)
+	GetInfoByID(ctx context.Context, in *GetInfoByIDRequest, opts ...grpc.CallOption) (*GetInfoByIDResponse, error)
 }
 
 type usersServiceClient struct {
@@ -95,6 +97,16 @@ func (c *usersServiceClient) Search(ctx context.Context, in *SearchRequest, opts
 	return out, nil
 }
 
+func (c *usersServiceClient) GetInfoByID(ctx context.Context, in *GetInfoByIDRequest, opts ...grpc.CallOption) (*GetInfoByIDResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetInfoByIDResponse)
+	err := c.cc.Invoke(ctx, UsersService_GetInfoByID_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UsersServiceServer is the server API for UsersService service.
 // All implementations must embed UnimplementedUsersServiceServer
 // for forward compatibility.
@@ -104,6 +116,7 @@ type UsersServiceServer interface {
 	Auth(context.Context, *AuthRequest) (*AuthResponse, error)
 	GetAuthInfo(context.Context, *GetAuthInfoRequest) (*GetAuthInfoResponse, error)
 	Search(context.Context, *SearchRequest) (*SearchResponse, error)
+	GetInfoByID(context.Context, *GetInfoByIDRequest) (*GetInfoByIDResponse, error)
 	mustEmbedUnimplementedUsersServiceServer()
 }
 
@@ -128,6 +141,9 @@ func (UnimplementedUsersServiceServer) GetAuthInfo(context.Context, *GetAuthInfo
 }
 func (UnimplementedUsersServiceServer) Search(context.Context, *SearchRequest) (*SearchResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Search not implemented")
+}
+func (UnimplementedUsersServiceServer) GetInfoByID(context.Context, *GetInfoByIDRequest) (*GetInfoByIDResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetInfoByID not implemented")
 }
 func (UnimplementedUsersServiceServer) mustEmbedUnimplementedUsersServiceServer() {}
 func (UnimplementedUsersServiceServer) testEmbeddedByValue()                      {}
@@ -240,6 +256,24 @@ func _UsersService_Search_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UsersService_GetInfoByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetInfoByIDRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UsersServiceServer).GetInfoByID(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UsersService_GetInfoByID_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UsersServiceServer).GetInfoByID(ctx, req.(*GetInfoByIDRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UsersService_ServiceDesc is the grpc.ServiceDesc for UsersService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -266,6 +300,10 @@ var UsersService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Search",
 			Handler:    _UsersService_Search_Handler,
+		},
+		{
+			MethodName: "GetInfoByID",
+			Handler:    _UsersService_GetInfoByID_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

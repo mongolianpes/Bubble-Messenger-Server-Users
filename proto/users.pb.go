@@ -593,6 +593,102 @@ func (x *SearchResponse) GetUsers() []*UserInfo {
 	return nil
 }
 
+type GetInfoByIDRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetInfoByIDRequest) Reset() {
+	*x = GetInfoByIDRequest{}
+	mi := &file_users_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetInfoByIDRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetInfoByIDRequest) ProtoMessage() {}
+
+func (x *GetInfoByIDRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_users_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetInfoByIDRequest.ProtoReflect.Descriptor instead.
+func (*GetInfoByIDRequest) Descriptor() ([]byte, []int) {
+	return file_users_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *GetInfoByIDRequest) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+type GetInfoByIDResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Login         string                 `protobuf:"bytes,1,opt,name=login,proto3" json:"login,omitempty"`
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetInfoByIDResponse) Reset() {
+	*x = GetInfoByIDResponse{}
+	mi := &file_users_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetInfoByIDResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetInfoByIDResponse) ProtoMessage() {}
+
+func (x *GetInfoByIDResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_users_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetInfoByIDResponse.ProtoReflect.Descriptor instead.
+func (*GetInfoByIDResponse) Descriptor() ([]byte, []int) {
+	return file_users_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *GetInfoByIDResponse) GetLogin() string {
+	if x != nil {
+		return x.Login
+	}
+	return ""
+}
+
+func (x *GetInfoByIDResponse) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
 var File_users_proto protoreflect.FileDescriptor
 
 const file_users_proto_rawDesc = "" +
@@ -631,13 +727,19 @@ const file_users_proto_rawDesc = "" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x0e\n" +
 	"\x02id\x18\x03 \x01(\x03R\x02id\"7\n" +
 	"\x0eSearchResponse\x12%\n" +
-	"\x05users\x18\x01 \x03(\v2\x0f.users.UserInfoR\x05users2\xa7\x02\n" +
+	"\x05users\x18\x01 \x03(\v2\x0f.users.UserInfoR\x05users\"$\n" +
+	"\x12GetInfoByIDRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\"?\n" +
+	"\x13GetInfoByIDResponse\x12\x14\n" +
+	"\x05login\x18\x01 \x01(\tR\x05login\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name2\xed\x02\n" +
 	"\fUsersService\x12,\n" +
 	"\x03TLS\x12\x11.users.TLSRequest\x1a\x12.users.TLSResponse\x12;\n" +
 	"\bRegister\x12\x16.users.RegisterRequest\x1a\x17.users.RegisterResponse\x12/\n" +
 	"\x04Auth\x12\x12.users.AuthRequest\x1a\x13.users.AuthResponse\x12D\n" +
 	"\vGetAuthInfo\x12\x19.users.GetAuthInfoRequest\x1a\x1a.users.GetAuthInfoResponse\x125\n" +
-	"\x06Search\x12\x14.users.SearchRequest\x1a\x15.users.SearchResponseB\x03Z\x01.b\x06proto3"
+	"\x06Search\x12\x14.users.SearchRequest\x1a\x15.users.SearchResponse\x12D\n" +
+	"\vGetInfoByID\x12\x19.users.GetInfoByIDRequest\x1a\x1a.users.GetInfoByIDResponseB\x03Z\x01.b\x06proto3"
 
 var (
 	file_users_proto_rawDescOnce sync.Once
@@ -651,7 +753,7 @@ func file_users_proto_rawDescGZIP() []byte {
 	return file_users_proto_rawDescData
 }
 
-var file_users_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
+var file_users_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_users_proto_goTypes = []any{
 	(*TLSRequest)(nil),          // 0: users.TLSRequest
 	(*TLSResponse)(nil),         // 1: users.TLSResponse
@@ -664,6 +766,8 @@ var file_users_proto_goTypes = []any{
 	(*SearchRequest)(nil),       // 8: users.SearchRequest
 	(*UserInfo)(nil),            // 9: users.UserInfo
 	(*SearchResponse)(nil),      // 10: users.SearchResponse
+	(*GetInfoByIDRequest)(nil),  // 11: users.GetInfoByIDRequest
+	(*GetInfoByIDResponse)(nil), // 12: users.GetInfoByIDResponse
 }
 var file_users_proto_depIdxs = []int32{
 	9,  // 0: users.SearchResponse.users:type_name -> users.UserInfo
@@ -672,13 +776,15 @@ var file_users_proto_depIdxs = []int32{
 	4,  // 3: users.UsersService.Auth:input_type -> users.AuthRequest
 	6,  // 4: users.UsersService.GetAuthInfo:input_type -> users.GetAuthInfoRequest
 	8,  // 5: users.UsersService.Search:input_type -> users.SearchRequest
-	1,  // 6: users.UsersService.TLS:output_type -> users.TLSResponse
-	3,  // 7: users.UsersService.Register:output_type -> users.RegisterResponse
-	5,  // 8: users.UsersService.Auth:output_type -> users.AuthResponse
-	7,  // 9: users.UsersService.GetAuthInfo:output_type -> users.GetAuthInfoResponse
-	10, // 10: users.UsersService.Search:output_type -> users.SearchResponse
-	6,  // [6:11] is the sub-list for method output_type
-	1,  // [1:6] is the sub-list for method input_type
+	11, // 6: users.UsersService.GetInfoByID:input_type -> users.GetInfoByIDRequest
+	1,  // 7: users.UsersService.TLS:output_type -> users.TLSResponse
+	3,  // 8: users.UsersService.Register:output_type -> users.RegisterResponse
+	5,  // 9: users.UsersService.Auth:output_type -> users.AuthResponse
+	7,  // 10: users.UsersService.GetAuthInfo:output_type -> users.GetAuthInfoResponse
+	10, // 11: users.UsersService.Search:output_type -> users.SearchResponse
+	12, // 12: users.UsersService.GetInfoByID:output_type -> users.GetInfoByIDResponse
+	7,  // [7:13] is the sub-list for method output_type
+	1,  // [1:7] is the sub-list for method input_type
 	1,  // [1:1] is the sub-list for extension type_name
 	1,  // [1:1] is the sub-list for extension extendee
 	0,  // [0:1] is the sub-list for field type_name
@@ -695,7 +801,7 @@ func file_users_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_users_proto_rawDesc), len(file_users_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   11,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

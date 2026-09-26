@@ -52,3 +52,15 @@ func (s *UsersService) Search(ctx context.Context, req *pb.SearchRequest) (*pb.S
 		Users: usersInfo,
 	}, nil
 }
+
+func (s *UsersService) GetInfoByID(ctx context.Context, req *pb.GetInfoByIDRequest) (*pb.GetInfoByIDResponse, error) {
+	login, name, err := s.SQLStorage.GetInfoByID(ctx, int(req.Id))
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.GetInfoByIDResponse{
+		Login: login,
+		Name:  name,
+	}, nil
+}

@@ -15,6 +15,7 @@ type SQLStorage interface {
 	RegisterUser(ctx context.Context, login, name, password string) error
 	GetPassword(ctx context.Context, login string) (string, error)
 	GetUserInfo(ctx context.Context, login string) (userName string, userID int, err error)
+	GetInfoByID(ctx context.Context, id int) (login, name string, err error)
 }
 
 func NewPostgresStorage() (*PostgresStorage, error) {
