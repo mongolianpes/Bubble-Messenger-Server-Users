@@ -1,12 +1,17 @@
 package db
 
-import "context"
+import (
+	"context"
+	"database/sql"
+)
 
 const (
 	registerUser    = "INSERT INTO users (login, name, password) VALUES ($1, $2, $3)"
 	getPassword     = "SELECT password FROM users WHERE login = $1"
 	getUserInfo     = "SELECT name, id FROM users WHERE login = $1"
 	getUserInfoByID = "SELECT login, name FROM users WHERE id = $1"
+	addUserAvatar   = "UPDATE users SET avatar_path = $2 WHERE login = $1"
+	GetUserAvatar   = "SELECT avatar_path FROM users WHERE login = $1"
 )
 
 func (s *PostgresStorage) RegisterUser(ctx context.Context, login, name, password string) error {
@@ -36,4 +41,20 @@ func (s *PostgresStorage) GetInfoByID(ctx context.Context, id int) (login, name 
 	}
 
 	return
+}
+
+func (s *PostgresStorage) AddUserAvatar(ctx context.Context, login, storageAvatarPath string) error {
+	_, err := s.db.ExecContext(ctx, addUserAvatar, login, storageAvatarPath)
+	return err
+}
+
+func (s *PostgresStorage) GetUserAvatarStoragePath(ctx context.Context, login string) (string, error) {
+	var avatarPath sql.NullString
+	if err := s.db.QueryRowContext(ctx, GetUserAvatar, login).Scan(&avatarPath); err != nil {
+		return "", err
+	}
+	if !avatarPath.Valid {
+		return "", nil
+	}
+	return avatarPath.String, nil
 }

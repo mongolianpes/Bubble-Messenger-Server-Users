@@ -64,3 +64,22 @@ func (s *UsersService) GetInfoByID(ctx context.Context, req *pb.GetInfoByIDReque
 		Name:  name,
 	}, nil
 }
+
+func (s *UsersService) AddUserAvatarPath(ctx context.Context, req *pb.AddUserAvatarPathRequest) (*pb.AddUserAvatarPathResponse, error) {
+	if err := s.SQLStorage.AddUserAvatar(ctx, req.Login, req.StorageAvatarPath); err != nil {
+		return nil, err
+	}
+
+	return &pb.AddUserAvatarPathResponse{}, nil
+}
+
+func (s *UsersService) GetUserAvatarPath(ctx context.Context, req *pb.GetUserAvatarPathRequest) (*pb.GetUserAvatarPathResponse, error) {
+	avatarPath, err := s.SQLStorage.GetUserAvatarStoragePath(ctx, req.Login)
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.GetUserAvatarPathResponse{
+		StoragePath: avatarPath,
+	}, nil
+}

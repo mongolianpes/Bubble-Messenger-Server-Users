@@ -34,6 +34,16 @@ func (m *MockSQLStorage) GetInfoByID(ctx context.Context, id int) (string, strin
 	return args.String(0), args.String(1), args.Error(2)
 }
 
+func (m *MockSQLStorage) AddUserAvatar(ctx context.Context, login, storageAvatarPath string) error {
+	args := m.Called(ctx, login, storageAvatarPath)
+	return args.Error(0)
+}
+
+func (m *MockSQLStorage) GetUserAvatarStoragePath(ctx context.Context, login string) (avatarPath string, err error) {
+	args := m.Called(ctx, login)
+	return args.String(0), args.Error(1)
+}
+
 // ---------- CacheStorage mock ----------
 
 type MockCacheStorage struct {

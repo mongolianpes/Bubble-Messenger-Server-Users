@@ -19,12 +19,14 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	UsersService_TLS_FullMethodName         = "/users.UsersService/TLS"
-	UsersService_Register_FullMethodName    = "/users.UsersService/Register"
-	UsersService_Auth_FullMethodName        = "/users.UsersService/Auth"
-	UsersService_GetAuthInfo_FullMethodName = "/users.UsersService/GetAuthInfo"
-	UsersService_Search_FullMethodName      = "/users.UsersService/Search"
-	UsersService_GetInfoByID_FullMethodName = "/users.UsersService/GetInfoByID"
+	UsersService_TLS_FullMethodName               = "/users.UsersService/TLS"
+	UsersService_Register_FullMethodName          = "/users.UsersService/Register"
+	UsersService_AddUserAvatarPath_FullMethodName = "/users.UsersService/AddUserAvatarPath"
+	UsersService_GetUserAvatarPath_FullMethodName = "/users.UsersService/GetUserAvatarPath"
+	UsersService_Auth_FullMethodName              = "/users.UsersService/Auth"
+	UsersService_GetAuthInfo_FullMethodName       = "/users.UsersService/GetAuthInfo"
+	UsersService_Search_FullMethodName            = "/users.UsersService/Search"
+	UsersService_GetInfoByID_FullMethodName       = "/users.UsersService/GetInfoByID"
 )
 
 // UsersServiceClient is the client API for UsersService service.
@@ -33,6 +35,8 @@ const (
 type UsersServiceClient interface {
 	TLS(ctx context.Context, in *TLSRequest, opts ...grpc.CallOption) (*TLSResponse, error)
 	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
+	AddUserAvatarPath(ctx context.Context, in *AddUserAvatarPathRequest, opts ...grpc.CallOption) (*AddUserAvatarPathResponse, error)
+	GetUserAvatarPath(ctx context.Context, in *GetUserAvatarPathRequest, opts ...grpc.CallOption) (*GetUserAvatarPathResponse, error)
 	Auth(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*AuthResponse, error)
 	GetAuthInfo(ctx context.Context, in *GetAuthInfoRequest, opts ...grpc.CallOption) (*GetAuthInfoResponse, error)
 	Search(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*SearchResponse, error)
@@ -61,6 +65,26 @@ func (c *usersServiceClient) Register(ctx context.Context, in *RegisterRequest, 
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(RegisterResponse)
 	err := c.cc.Invoke(ctx, UsersService_Register_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *usersServiceClient) AddUserAvatarPath(ctx context.Context, in *AddUserAvatarPathRequest, opts ...grpc.CallOption) (*AddUserAvatarPathResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AddUserAvatarPathResponse)
+	err := c.cc.Invoke(ctx, UsersService_AddUserAvatarPath_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *usersServiceClient) GetUserAvatarPath(ctx context.Context, in *GetUserAvatarPathRequest, opts ...grpc.CallOption) (*GetUserAvatarPathResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetUserAvatarPathResponse)
+	err := c.cc.Invoke(ctx, UsersService_GetUserAvatarPath_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -113,6 +137,8 @@ func (c *usersServiceClient) GetInfoByID(ctx context.Context, in *GetInfoByIDReq
 type UsersServiceServer interface {
 	TLS(context.Context, *TLSRequest) (*TLSResponse, error)
 	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
+	AddUserAvatarPath(context.Context, *AddUserAvatarPathRequest) (*AddUserAvatarPathResponse, error)
+	GetUserAvatarPath(context.Context, *GetUserAvatarPathRequest) (*GetUserAvatarPathResponse, error)
 	Auth(context.Context, *AuthRequest) (*AuthResponse, error)
 	GetAuthInfo(context.Context, *GetAuthInfoRequest) (*GetAuthInfoResponse, error)
 	Search(context.Context, *SearchRequest) (*SearchResponse, error)
@@ -132,6 +158,12 @@ func (UnimplementedUsersServiceServer) TLS(context.Context, *TLSRequest) (*TLSRe
 }
 func (UnimplementedUsersServiceServer) Register(context.Context, *RegisterRequest) (*RegisterResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Register not implemented")
+}
+func (UnimplementedUsersServiceServer) AddUserAvatarPath(context.Context, *AddUserAvatarPathRequest) (*AddUserAvatarPathResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method AddUserAvatarPath not implemented")
+}
+func (UnimplementedUsersServiceServer) GetUserAvatarPath(context.Context, *GetUserAvatarPathRequest) (*GetUserAvatarPathResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetUserAvatarPath not implemented")
 }
 func (UnimplementedUsersServiceServer) Auth(context.Context, *AuthRequest) (*AuthResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Auth not implemented")
@@ -198,6 +230,42 @@ func _UsersService_Register_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UsersServiceServer).Register(ctx, req.(*RegisterRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UsersService_AddUserAvatarPath_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddUserAvatarPathRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UsersServiceServer).AddUserAvatarPath(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UsersService_AddUserAvatarPath_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UsersServiceServer).AddUserAvatarPath(ctx, req.(*AddUserAvatarPathRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UsersService_GetUserAvatarPath_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserAvatarPathRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UsersServiceServer).GetUserAvatarPath(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UsersService_GetUserAvatarPath_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UsersServiceServer).GetUserAvatarPath(ctx, req.(*GetUserAvatarPathRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -288,6 +356,14 @@ var UsersService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Register",
 			Handler:    _UsersService_Register_Handler,
+		},
+		{
+			MethodName: "AddUserAvatarPath",
+			Handler:    _UsersService_AddUserAvatarPath_Handler,
+		},
+		{
+			MethodName: "GetUserAvatarPath",
+			Handler:    _UsersService_GetUserAvatarPath_Handler,
 		},
 		{
 			MethodName: "Auth",

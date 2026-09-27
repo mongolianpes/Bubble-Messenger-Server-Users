@@ -16,6 +16,8 @@ type SQLStorage interface {
 	GetPassword(ctx context.Context, login string) (string, error)
 	GetUserInfo(ctx context.Context, login string) (userName string, userID int, err error)
 	GetInfoByID(ctx context.Context, id int) (login, name string, err error)
+	AddUserAvatar(ctx context.Context, login, storageAvatarPath string) error
+	GetUserAvatarStoragePath(ctx context.Context, login string) (avatarPath string, err error)
 }
 
 func NewPostgresStorage() (*PostgresStorage, error) {

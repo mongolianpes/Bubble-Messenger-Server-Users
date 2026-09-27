@@ -179,3 +179,104 @@ func TestGetInfoByID(t *testing.T) {
 	})
 
 }
+
+func TestAddUserAvatar(t *testing.T) {
+	db, storage := setupTestDB(t)
+	defer db.Close()
+
+	ctx := context.Background()
+
+	t.Run("success", func(t *testing.T) {
+		const (
+			login      = "avataruser"
+			name       = "Avatar User"
+			avatarPath = "/avatars/avataruser.png"
+		)
+		hashedPass := generateTestHashedPass()
+
+		_, err := db.ExecContext(ctx, `
+			INSERT INTO users (login, name, password)
+			VALUES ($1, $2, $3)
+		`, login, name, hashedPass)
+		require.NoError(t, err)
+
+		err = storage.AddUserAvatar(ctx, login, avatarPath)
+		require.NoError(t, err)
+
+		var gotPath string
+		err = db.QueryRowContext(ctx, `
+			SELECT avatar_path FROM users WHERE login = $1
+		`, login).Scan(&gotPath)
+		require.NoError(t, err)
+		assert.Equal(t, avatarPath, gotPath)
+	})
+
+	t.Run("user not found", func(t *testing.T) {
+		const (
+			login      = "nonexistent"
+			avatarPath = "/avatars/fake.png"
+		)
+
+		err := storage.AddUserAvatar(ctx, login, avatarPath)
+		require.NoError(t, err)
+
+		var count int
+		err = db.QueryRowContext(ctx, `
+			SELECT COUNT(*) FROM users WHERE login = $1 AND avatar_path = $2
+		`, login, avatarPath).Scan(&count)
+		require.NoError(t, err)
+		assert.Equal(t, 0, count)
+	})
+}
+
+func TestGetUserAvatarStoragePath(t *testing.T) {
+	db, storage := setupTestDB(t)
+	defer db.Close()
+
+	ctx := context.Background()
+
+	t.Run("success", func(t *testing.T) {
+		const (
+			login      = "getavataruser"
+			name       = "Get Avatar User"
+			avatarPath = "/avatars/getavataruser.png"
+		)
+		hashedPass := generateTestHashedPass()
+
+		_, err := db.ExecContext(ctx, `
+			INSERT INTO users (login, name, password, avatar_path)
+			VALUES ($1, $2, $3, $4)
+		`, login, name, hashedPass, avatarPath)
+		require.NoError(t, err)
+
+		gotPath, err := storage.GetUserAvatarStoragePath(ctx, login)
+		require.NoError(t, err)
+		assert.Equal(t, avatarPath, gotPath)
+	})
+
+	t.Run("no avatar set", func(t *testing.T) {
+		const (
+			login = "noavataruser"
+			name  = "No Avatar User"
+		)
+		hashedPass := generateTestHashedPass()
+
+		_, err := db.ExecContext(ctx, `
+			INSERT INTO users (login, name, password)
+			VALUES ($1, $2, $3)
+		`, login, name, hashedPass)
+		require.NoError(t, err)
+
+		gotPath, err := storage.GetUserAvatarStoragePath(ctx, login)
+
+		require.NoError(t, err)
+		assert.Empty(t, gotPath)
+	})
+
+	t.Run("user not found", func(t *testing.T) {
+		gotPath, err := storage.GetUserAvatarStoragePath(ctx, "nonexistent")
+		require.Error(t, err)
+		assert.ErrorIs(t, err, sql.ErrNoRows)
+		assert.Empty(t, gotPath)
+	})
+}
