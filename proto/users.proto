@@ -54,6 +54,8 @@ message AuthResponse {
 
 message GetAuthInfoRequest {
   string device = 1;
+  string login = 2;
+  string password = 3;
 }
 
 message GetAuthInfoResponse {

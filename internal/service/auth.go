@@ -210,8 +210,20 @@ func (s *UsersService) GetAuthInfo(ctx context.Context, req *pb.GetAuthInfoReque
 		return nil, err
 	}
 
-	return &pb.GetAuthInfoResponse{
-		Key:    key,
-		UserId: int64(id),
-	}, nil
+	resp := &pb.GetAuthInfoResponse{
+		Key: key,
+	}
+
+	currentPassword, err := s.SQLStorage.GetPassword(ctx, req.Login)
+	if err != nil {
+		return resp, err
+	}
+
+	if !crypto.VerifyPassword(currentPassword, req.Password) {
+		return resp, errors.New("Incorrect login or password")
+	}
+
+	resp.UserId = int64(id)
+
+	return resp, nil
 }
