@@ -24,7 +24,6 @@ const (
 	UsersService_AddUserAvatarPath_FullMethodName = "/users.UsersService/AddUserAvatarPath"
 	UsersService_GetUserAvatarPath_FullMethodName = "/users.UsersService/GetUserAvatarPath"
 	UsersService_Auth_FullMethodName              = "/users.UsersService/Auth"
-	UsersService_GetAuthInfo_FullMethodName       = "/users.UsersService/GetAuthInfo"
 	UsersService_Search_FullMethodName            = "/users.UsersService/Search"
 	UsersService_GetInfoByID_FullMethodName       = "/users.UsersService/GetInfoByID"
 )
@@ -38,7 +37,6 @@ type UsersServiceClient interface {
 	AddUserAvatarPath(ctx context.Context, in *AddUserAvatarPathRequest, opts ...grpc.CallOption) (*AddUserAvatarPathResponse, error)
 	GetUserAvatarPath(ctx context.Context, in *GetUserAvatarPathRequest, opts ...grpc.CallOption) (*GetUserAvatarPathResponse, error)
 	Auth(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*AuthResponse, error)
-	GetAuthInfo(ctx context.Context, in *GetAuthInfoRequest, opts ...grpc.CallOption) (*GetAuthInfoResponse, error)
 	Search(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*SearchResponse, error)
 	GetInfoByID(ctx context.Context, in *GetInfoByIDRequest, opts ...grpc.CallOption) (*GetInfoByIDResponse, error)
 }
@@ -101,16 +99,6 @@ func (c *usersServiceClient) Auth(ctx context.Context, in *AuthRequest, opts ...
 	return out, nil
 }
 
-func (c *usersServiceClient) GetAuthInfo(ctx context.Context, in *GetAuthInfoRequest, opts ...grpc.CallOption) (*GetAuthInfoResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetAuthInfoResponse)
-	err := c.cc.Invoke(ctx, UsersService_GetAuthInfo_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *usersServiceClient) Search(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*SearchResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(SearchResponse)
@@ -140,7 +128,6 @@ type UsersServiceServer interface {
 	AddUserAvatarPath(context.Context, *AddUserAvatarPathRequest) (*AddUserAvatarPathResponse, error)
 	GetUserAvatarPath(context.Context, *GetUserAvatarPathRequest) (*GetUserAvatarPathResponse, error)
 	Auth(context.Context, *AuthRequest) (*AuthResponse, error)
-	GetAuthInfo(context.Context, *GetAuthInfoRequest) (*GetAuthInfoResponse, error)
 	Search(context.Context, *SearchRequest) (*SearchResponse, error)
 	GetInfoByID(context.Context, *GetInfoByIDRequest) (*GetInfoByIDResponse, error)
 	mustEmbedUnimplementedUsersServiceServer()
@@ -167,9 +154,6 @@ func (UnimplementedUsersServiceServer) GetUserAvatarPath(context.Context, *GetUs
 }
 func (UnimplementedUsersServiceServer) Auth(context.Context, *AuthRequest) (*AuthResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Auth not implemented")
-}
-func (UnimplementedUsersServiceServer) GetAuthInfo(context.Context, *GetAuthInfoRequest) (*GetAuthInfoResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method GetAuthInfo not implemented")
 }
 func (UnimplementedUsersServiceServer) Search(context.Context, *SearchRequest) (*SearchResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Search not implemented")
@@ -288,24 +272,6 @@ func _UsersService_Auth_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UsersService_GetAuthInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetAuthInfoRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(UsersServiceServer).GetAuthInfo(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: UsersService_GetAuthInfo_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UsersServiceServer).GetAuthInfo(ctx, req.(*GetAuthInfoRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _UsersService_Search_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SearchRequest)
 	if err := dec(in); err != nil {
@@ -368,10 +334,6 @@ var UsersService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Auth",
 			Handler:    _UsersService_Auth_Handler,
-		},
-		{
-			MethodName: "GetAuthInfo",
-			Handler:    _UsersService_GetAuthInfo_Handler,
 		},
 		{
 			MethodName: "Search",

@@ -41,23 +41,15 @@ message GetUserAvatarPathResponse {
 }
 
 message AuthRequest {
-  string login = 1;
-  string password = 2;
-  string device = 3;
+  string device = 1;
+  string login = 2;
+  string password = 3;
 }
 
 message AuthResponse {
-  string name = 1;
-  string key = 2;
-}
-
-message GetAuthInfoRequest {
-  string device = 1;
-}
-
-message GetAuthInfoResponse {
   string key = 1;
   int64 user_id = 2;
+  string user_name = 3;
 }
 
 message SearchRequest {
@@ -89,7 +81,6 @@ service UsersService {
   rpc AddUserAvatarPath(AddUserAvatarPathRequest) returns (AddUserAvatarPathResponse);
   rpc GetUserAvatarPath(GetUserAvatarPathRequest) returns (GetUserAvatarPathResponse);
   rpc Auth(AuthRequest) returns (AuthResponse);
-  rpc GetAuthInfo(GetAuthInfoRequest) returns (GetAuthInfoResponse);
   rpc Search(SearchRequest) returns (SearchResponse);
   rpc GetInfoByID(GetInfoByIDRequest) returns (GetInfoByIDResponse);
 }

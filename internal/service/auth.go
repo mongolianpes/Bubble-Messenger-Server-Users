@@ -189,26 +189,17 @@ func (s *UsersService) Auth(ctx context.Context, req *pb.AuthRequest) (*pb.AuthR
 		return resp, errors.New("Incorrect login or password")
 	}
 
-	_, id, err := s.SQLStorage.GetUserInfo(ctx, req.Login)
+	userName, id, err := s.SQLStorage.GetUserInfo(ctx, req.Login)
 	if err != nil {
 		return resp, err
 	}
+
+	resp.UserName = userName
+	resp.UserId = int64(id)
 
 	if err := s.cacheStorage.SetSession(ctx, req.Device, key, id); err != nil {
 		return resp, err
 	}
 
 	return resp, nil
-}
-
-func (s *UsersService) GetAuthInfo(ctx context.Context, req *pb.GetAuthInfoRequest) (*pb.GetAuthInfoResponse, error) {
-	key, id, err := s.cacheStorage.GetAuthInfo(ctx, req.Device)
-	if err != nil {
-		return nil, err
-	}
-
-	return &pb.GetAuthInfoResponse{
-		Key:    key,
-		UserId: int64(id),
-	}, nil
 }
