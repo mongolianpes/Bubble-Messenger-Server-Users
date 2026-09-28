@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 	"testing"
 	"time"
 
@@ -211,5 +212,35 @@ func TestAuth(t *testing.T) {
 
 		sqlMock.AssertNotCalled(t, "GetPassword")
 		cacheMock.AssertNotCalled(t, "SetSession")
+	})
+}
+
+func TestGetAuthInfo(t *testing.T) {
+	ctx := context.Background()
+
+	t.Run("success", func(t *testing.T) {
+		svc, _, cache := newTestService()
+		cache.On("GetAuthInfo", ctx, "dev-1").
+			Return("secret-key", 42, nil).
+			Once()
+
+		resp, err := svc.GetAuthInfo(ctx, &pb.GetAuthInfoRequest{Device: "dev-1"})
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		assert.Equal(t, "secret-key", resp.Key)
+		assert.Equal(t, int64(42), resp.UserId)
+		cache.AssertExpectations(t)
+	})
+
+	t.Run("error from cache", func(t *testing.T) {
+		svc, _, cache := newTestService()
+		cache.On("GetAuthInfo", ctx, "dev-2").
+			Return("", 0, errors.New("not found")).
+			Once()
+
+		resp, err := svc.GetAuthInfo(ctx, &pb.GetAuthInfoRequest{Device: "dev-2"})
+		require.Error(t, err)
+		assert.Nil(t, resp)
+		cache.AssertExpectations(t)
 	})
 }

@@ -203,3 +203,15 @@ func (s *UsersService) Auth(ctx context.Context, req *pb.AuthRequest) (*pb.AuthR
 
 	return resp, nil
 }
+
+func (s *UsersService) GetAuthInfo(ctx context.Context, req *pb.GetAuthInfoRequest) (*pb.GetAuthInfoResponse, error) {
+	key, id, err := s.cacheStorage.GetAuthInfo(ctx, req.Device)
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.GetAuthInfoResponse{
+		Key:    key,
+		UserId: int64(id),
+	}, nil
+}

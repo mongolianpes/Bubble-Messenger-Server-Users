@@ -415,9 +415,9 @@ func (x *GetUserAvatarPathResponse) GetStoragePath() string {
 
 type AuthRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Device        string                 `protobuf:"bytes,1,opt,name=device,proto3" json:"device,omitempty"`
-	Login         string                 `protobuf:"bytes,2,opt,name=login,proto3" json:"login,omitempty"`
-	Password      string                 `protobuf:"bytes,3,opt,name=password,proto3" json:"password,omitempty"`
+	Login         string                 `protobuf:"bytes,1,opt,name=login,proto3" json:"login,omitempty"`
+	Password      string                 `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
+	Device        string                 `protobuf:"bytes,3,opt,name=device,proto3" json:"device,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -452,13 +452,6 @@ func (*AuthRequest) Descriptor() ([]byte, []int) {
 	return file_users_proto_rawDescGZIP(), []int{8}
 }
 
-func (x *AuthRequest) GetDevice() string {
-	if x != nil {
-		return x.Device
-	}
-	return ""
-}
-
 func (x *AuthRequest) GetLogin() string {
 	if x != nil {
 		return x.Login
@@ -473,11 +466,18 @@ func (x *AuthRequest) GetPassword() string {
 	return ""
 }
 
+func (x *AuthRequest) GetDevice() string {
+	if x != nil {
+		return x.Device
+	}
+	return ""
+}
+
 type AuthResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Key           string                 `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
-	UserId        int64                  `protobuf:"varint,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	UserName      string                 `protobuf:"bytes,3,opt,name=user_name,json=userName,proto3" json:"user_name,omitempty"`
+	UserName      string                 `protobuf:"bytes,1,opt,name=user_name,json=userName,proto3" json:"user_name,omitempty"`
+	Key           string                 `protobuf:"bytes,2,opt,name=key,proto3" json:"key,omitempty"`
+	UserId        int64                  `protobuf:"varint,3,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -512,6 +512,13 @@ func (*AuthResponse) Descriptor() ([]byte, []int) {
 	return file_users_proto_rawDescGZIP(), []int{9}
 }
 
+func (x *AuthResponse) GetUserName() string {
+	if x != nil {
+		return x.UserName
+	}
+	return ""
+}
+
 func (x *AuthResponse) GetKey() string {
 	if x != nil {
 		return x.Key
@@ -526,11 +533,100 @@ func (x *AuthResponse) GetUserId() int64 {
 	return 0
 }
 
-func (x *AuthResponse) GetUserName() string {
+type GetAuthInfoRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Device        string                 `protobuf:"bytes,1,opt,name=device,proto3" json:"device,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetAuthInfoRequest) Reset() {
+	*x = GetAuthInfoRequest{}
+	mi := &file_users_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetAuthInfoRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetAuthInfoRequest) ProtoMessage() {}
+
+func (x *GetAuthInfoRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_users_proto_msgTypes[10]
 	if x != nil {
-		return x.UserName
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetAuthInfoRequest.ProtoReflect.Descriptor instead.
+func (*GetAuthInfoRequest) Descriptor() ([]byte, []int) {
+	return file_users_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *GetAuthInfoRequest) GetDevice() string {
+	if x != nil {
+		return x.Device
 	}
 	return ""
+}
+
+type GetAuthInfoResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Key           string                 `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
+	UserId        int64                  `protobuf:"varint,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetAuthInfoResponse) Reset() {
+	*x = GetAuthInfoResponse{}
+	mi := &file_users_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetAuthInfoResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetAuthInfoResponse) ProtoMessage() {}
+
+func (x *GetAuthInfoResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_users_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetAuthInfoResponse.ProtoReflect.Descriptor instead.
+func (*GetAuthInfoResponse) Descriptor() ([]byte, []int) {
+	return file_users_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *GetAuthInfoResponse) GetKey() string {
+	if x != nil {
+		return x.Key
+	}
+	return ""
+}
+
+func (x *GetAuthInfoResponse) GetUserId() int64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
 }
 
 type SearchRequest struct {
@@ -542,7 +638,7 @@ type SearchRequest struct {
 
 func (x *SearchRequest) Reset() {
 	*x = SearchRequest{}
-	mi := &file_users_proto_msgTypes[10]
+	mi := &file_users_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -554,7 +650,7 @@ func (x *SearchRequest) String() string {
 func (*SearchRequest) ProtoMessage() {}
 
 func (x *SearchRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_users_proto_msgTypes[10]
+	mi := &file_users_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -567,7 +663,7 @@ func (x *SearchRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchRequest.ProtoReflect.Descriptor instead.
 func (*SearchRequest) Descriptor() ([]byte, []int) {
-	return file_users_proto_rawDescGZIP(), []int{10}
+	return file_users_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *SearchRequest) GetQuery() string {
@@ -588,7 +684,7 @@ type UserInfo struct {
 
 func (x *UserInfo) Reset() {
 	*x = UserInfo{}
-	mi := &file_users_proto_msgTypes[11]
+	mi := &file_users_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -600,7 +696,7 @@ func (x *UserInfo) String() string {
 func (*UserInfo) ProtoMessage() {}
 
 func (x *UserInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_users_proto_msgTypes[11]
+	mi := &file_users_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -613,7 +709,7 @@ func (x *UserInfo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UserInfo.ProtoReflect.Descriptor instead.
 func (*UserInfo) Descriptor() ([]byte, []int) {
-	return file_users_proto_rawDescGZIP(), []int{11}
+	return file_users_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *UserInfo) GetLogin() string {
@@ -646,7 +742,7 @@ type SearchResponse struct {
 
 func (x *SearchResponse) Reset() {
 	*x = SearchResponse{}
-	mi := &file_users_proto_msgTypes[12]
+	mi := &file_users_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -658,7 +754,7 @@ func (x *SearchResponse) String() string {
 func (*SearchResponse) ProtoMessage() {}
 
 func (x *SearchResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_users_proto_msgTypes[12]
+	mi := &file_users_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -671,7 +767,7 @@ func (x *SearchResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchResponse.ProtoReflect.Descriptor instead.
 func (*SearchResponse) Descriptor() ([]byte, []int) {
-	return file_users_proto_rawDescGZIP(), []int{12}
+	return file_users_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *SearchResponse) GetUsers() []*UserInfo {
@@ -690,7 +786,7 @@ type GetInfoByIDRequest struct {
 
 func (x *GetInfoByIDRequest) Reset() {
 	*x = GetInfoByIDRequest{}
-	mi := &file_users_proto_msgTypes[13]
+	mi := &file_users_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -702,7 +798,7 @@ func (x *GetInfoByIDRequest) String() string {
 func (*GetInfoByIDRequest) ProtoMessage() {}
 
 func (x *GetInfoByIDRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_users_proto_msgTypes[13]
+	mi := &file_users_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -715,7 +811,7 @@ func (x *GetInfoByIDRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetInfoByIDRequest.ProtoReflect.Descriptor instead.
 func (*GetInfoByIDRequest) Descriptor() ([]byte, []int) {
-	return file_users_proto_rawDescGZIP(), []int{13}
+	return file_users_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *GetInfoByIDRequest) GetId() int64 {
@@ -735,7 +831,7 @@ type GetInfoByIDResponse struct {
 
 func (x *GetInfoByIDResponse) Reset() {
 	*x = GetInfoByIDResponse{}
-	mi := &file_users_proto_msgTypes[14]
+	mi := &file_users_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -747,7 +843,7 @@ func (x *GetInfoByIDResponse) String() string {
 func (*GetInfoByIDResponse) ProtoMessage() {}
 
 func (x *GetInfoByIDResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_users_proto_msgTypes[14]
+	mi := &file_users_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -760,7 +856,7 @@ func (x *GetInfoByIDResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetInfoByIDResponse.ProtoReflect.Descriptor instead.
 func (*GetInfoByIDResponse) Descriptor() ([]byte, []int) {
-	return file_users_proto_rawDescGZIP(), []int{14}
+	return file_users_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *GetInfoByIDResponse) GetLogin() string {
@@ -804,14 +900,19 @@ const file_users_proto_rawDesc = "" +
 	"\x05login\x18\x01 \x01(\tR\x05login\"=\n" +
 	"\x19GetUserAvatarPathResponse\x12 \n" +
 	"\vstoragePath\x18\x01 \x01(\tR\vstoragePath\"W\n" +
-	"\vAuthRequest\x12\x16\n" +
-	"\x06device\x18\x01 \x01(\tR\x06device\x12\x14\n" +
-	"\x05login\x18\x02 \x01(\tR\x05login\x12\x1a\n" +
-	"\bpassword\x18\x03 \x01(\tR\bpassword\"V\n" +
-	"\fAuthResponse\x12\x10\n" +
+	"\vAuthRequest\x12\x14\n" +
+	"\x05login\x18\x01 \x01(\tR\x05login\x12\x1a\n" +
+	"\bpassword\x18\x02 \x01(\tR\bpassword\x12\x16\n" +
+	"\x06device\x18\x03 \x01(\tR\x06device\"V\n" +
+	"\fAuthResponse\x12\x1b\n" +
+	"\tuser_name\x18\x01 \x01(\tR\buserName\x12\x10\n" +
+	"\x03key\x18\x02 \x01(\tR\x03key\x12\x17\n" +
+	"\auser_id\x18\x03 \x01(\x03R\x06userId\",\n" +
+	"\x12GetAuthInfoRequest\x12\x16\n" +
+	"\x06device\x18\x01 \x01(\tR\x06device\"@\n" +
+	"\x13GetAuthInfoResponse\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x17\n" +
-	"\auser_id\x18\x02 \x01(\x03R\x06userId\x12\x1b\n" +
-	"\tuser_name\x18\x03 \x01(\tR\buserName\"%\n" +
+	"\auser_id\x18\x02 \x01(\x03R\x06userId\"%\n" +
 	"\rSearchRequest\x12\x14\n" +
 	"\x05query\x18\x01 \x01(\tR\x05query\"D\n" +
 	"\bUserInfo\x12\x14\n" +
@@ -824,13 +925,14 @@ const file_users_proto_rawDesc = "" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\"?\n" +
 	"\x13GetInfoByIDResponse\x12\x14\n" +
 	"\x05login\x18\x01 \x01(\tR\x05login\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name2\xd7\x03\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name2\x9d\x04\n" +
 	"\fUsersService\x12,\n" +
 	"\x03TLS\x12\x11.users.TLSRequest\x1a\x12.users.TLSResponse\x12;\n" +
 	"\bRegister\x12\x16.users.RegisterRequest\x1a\x17.users.RegisterResponse\x12V\n" +
 	"\x11AddUserAvatarPath\x12\x1f.users.AddUserAvatarPathRequest\x1a .users.AddUserAvatarPathResponse\x12V\n" +
 	"\x11GetUserAvatarPath\x12\x1f.users.GetUserAvatarPathRequest\x1a .users.GetUserAvatarPathResponse\x12/\n" +
-	"\x04Auth\x12\x12.users.AuthRequest\x1a\x13.users.AuthResponse\x125\n" +
+	"\x04Auth\x12\x12.users.AuthRequest\x1a\x13.users.AuthResponse\x12D\n" +
+	"\vGetAuthInfo\x12\x19.users.GetAuthInfoRequest\x1a\x1a.users.GetAuthInfoResponse\x125\n" +
 	"\x06Search\x12\x14.users.SearchRequest\x1a\x15.users.SearchResponse\x12D\n" +
 	"\vGetInfoByID\x12\x19.users.GetInfoByIDRequest\x1a\x1a.users.GetInfoByIDResponseB\x03Z\x01.b\x06proto3"
 
@@ -846,7 +948,7 @@ func file_users_proto_rawDescGZIP() []byte {
 	return file_users_proto_rawDescData
 }
 
-var file_users_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
+var file_users_proto_msgTypes = make([]protoimpl.MessageInfo, 17)
 var file_users_proto_goTypes = []any{
 	(*TLSRequest)(nil),                // 0: users.TLSRequest
 	(*TLSResponse)(nil),               // 1: users.TLSResponse
@@ -858,30 +960,34 @@ var file_users_proto_goTypes = []any{
 	(*GetUserAvatarPathResponse)(nil), // 7: users.GetUserAvatarPathResponse
 	(*AuthRequest)(nil),               // 8: users.AuthRequest
 	(*AuthResponse)(nil),              // 9: users.AuthResponse
-	(*SearchRequest)(nil),             // 10: users.SearchRequest
-	(*UserInfo)(nil),                  // 11: users.UserInfo
-	(*SearchResponse)(nil),            // 12: users.SearchResponse
-	(*GetInfoByIDRequest)(nil),        // 13: users.GetInfoByIDRequest
-	(*GetInfoByIDResponse)(nil),       // 14: users.GetInfoByIDResponse
+	(*GetAuthInfoRequest)(nil),        // 10: users.GetAuthInfoRequest
+	(*GetAuthInfoResponse)(nil),       // 11: users.GetAuthInfoResponse
+	(*SearchRequest)(nil),             // 12: users.SearchRequest
+	(*UserInfo)(nil),                  // 13: users.UserInfo
+	(*SearchResponse)(nil),            // 14: users.SearchResponse
+	(*GetInfoByIDRequest)(nil),        // 15: users.GetInfoByIDRequest
+	(*GetInfoByIDResponse)(nil),       // 16: users.GetInfoByIDResponse
 }
 var file_users_proto_depIdxs = []int32{
-	11, // 0: users.SearchResponse.users:type_name -> users.UserInfo
+	13, // 0: users.SearchResponse.users:type_name -> users.UserInfo
 	0,  // 1: users.UsersService.TLS:input_type -> users.TLSRequest
 	2,  // 2: users.UsersService.Register:input_type -> users.RegisterRequest
 	4,  // 3: users.UsersService.AddUserAvatarPath:input_type -> users.AddUserAvatarPathRequest
 	6,  // 4: users.UsersService.GetUserAvatarPath:input_type -> users.GetUserAvatarPathRequest
 	8,  // 5: users.UsersService.Auth:input_type -> users.AuthRequest
-	10, // 6: users.UsersService.Search:input_type -> users.SearchRequest
-	13, // 7: users.UsersService.GetInfoByID:input_type -> users.GetInfoByIDRequest
-	1,  // 8: users.UsersService.TLS:output_type -> users.TLSResponse
-	3,  // 9: users.UsersService.Register:output_type -> users.RegisterResponse
-	5,  // 10: users.UsersService.AddUserAvatarPath:output_type -> users.AddUserAvatarPathResponse
-	7,  // 11: users.UsersService.GetUserAvatarPath:output_type -> users.GetUserAvatarPathResponse
-	9,  // 12: users.UsersService.Auth:output_type -> users.AuthResponse
-	12, // 13: users.UsersService.Search:output_type -> users.SearchResponse
-	14, // 14: users.UsersService.GetInfoByID:output_type -> users.GetInfoByIDResponse
-	8,  // [8:15] is the sub-list for method output_type
-	1,  // [1:8] is the sub-list for method input_type
+	10, // 6: users.UsersService.GetAuthInfo:input_type -> users.GetAuthInfoRequest
+	12, // 7: users.UsersService.Search:input_type -> users.SearchRequest
+	15, // 8: users.UsersService.GetInfoByID:input_type -> users.GetInfoByIDRequest
+	1,  // 9: users.UsersService.TLS:output_type -> users.TLSResponse
+	3,  // 10: users.UsersService.Register:output_type -> users.RegisterResponse
+	5,  // 11: users.UsersService.AddUserAvatarPath:output_type -> users.AddUserAvatarPathResponse
+	7,  // 12: users.UsersService.GetUserAvatarPath:output_type -> users.GetUserAvatarPathResponse
+	9,  // 13: users.UsersService.Auth:output_type -> users.AuthResponse
+	11, // 14: users.UsersService.GetAuthInfo:output_type -> users.GetAuthInfoResponse
+	14, // 15: users.UsersService.Search:output_type -> users.SearchResponse
+	16, // 16: users.UsersService.GetInfoByID:output_type -> users.GetInfoByIDResponse
+	9,  // [9:17] is the sub-list for method output_type
+	1,  // [1:9] is the sub-list for method input_type
 	1,  // [1:1] is the sub-list for extension type_name
 	1,  // [1:1] is the sub-list for extension extendee
 	0,  // [0:1] is the sub-list for field type_name
@@ -898,7 +1004,7 @@ func file_users_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_users_proto_rawDesc), len(file_users_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   15,
+			NumMessages:   17,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
