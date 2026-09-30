@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log/slog"
 	"net"
 	"users/internal/db"
 	"users/internal/rdb"
@@ -14,25 +15,28 @@ import (
 func main() {
 	usersStorage, err := db.NewPostgresStorage()
 	if err != nil {
-		panic(err)
+		slog.Error("Connect to DB", "error", err)
+		return
 	}
 
 	sessionStorage, err := rdb.NewRedisStorage()
 	if err != nil {
-		panic(err)
+		slog.Error("Connect to DB")
+		return
 	}
 
 	activeUsers := service.NewAuthAndRegUsers()
 
 	lis, err := net.Listen("tcp", ":8086")
 	if err != nil {
-		panic(err)
+		slog.Error("Start listen port", "error", err)
+		return
 	}
 
 	grpcServer := grpc.NewServer()
 	pb.RegisterUsersServiceServer(grpcServer, service.NewUsersService(sessionStorage, usersStorage, activeUsers))
 
 	if err := grpcServer.Serve(lis); err != nil {
-		panic(err)
+		slog.Error("Serve gRPC service", "error", err)
 	}
 }

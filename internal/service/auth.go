@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"log/slog"
 	"sync"
 	"time"
 
@@ -68,16 +69,19 @@ func (s *UsersService) TLS(ctx context.Context, req *pb.TLSRequest) (*pb.TLSResp
 
 	if req.IsRegistring {
 		if _, ok := s.activeUsers.reg[req.Id]; ok {
-			return nil, errors.New("User with this login registrating now, retry 10 seconds")
+			slog.WarnContext(ctx, "TLS: device has already completed the TLS handshake", "deviceID", req.Id)
+			return nil, errors.New("User has already completed the TLS handshake, retry 10 seconds")
 		}
 	} else {
 		if _, ok := s.activeUsers.auth[req.Id]; ok {
-			return nil, errors.New("User with this login auth now, retry 10 seconds")
+			slog.WarnContext(ctx, "TLS: device has already completed the TLS handshake", "deviceID", req.Id)
+			return nil, errors.New("User has already completed the TLS handshake, retry 10 seconds")
 		}
 	}
 
 	sharedSecret, serverPublicKey, err := ecdh.GenerateKeys(req.ClientPublicKey)
 	if err != nil {
+		slog.WarnContext(ctx, "TLS: Generate key", "clientPublicKey", req.ClientPublicKey, "error", err)
 		return nil, err
 	}
 
@@ -110,6 +114,7 @@ func (s *UsersService) Register(ctx context.Context, req *pb.RegisterRequest) (*
 	defer s.activeUsers.Unlock()
 	info, ok := s.activeUsers.reg[req.Device]
 	if !ok {
+		slog.WarnContext(ctx, "Register: device did not pass TLS", "device", req.Device)
 		return nil, errors.New("This request is not expected for you")
 	}
 
@@ -120,11 +125,13 @@ func (s *UsersService) Register(ctx context.Context, req *pb.RegisterRequest) (*
 	var err error
 	req.Login, err = crypto.StringDecrypt(req.Login, key)
 	if err != nil {
+		slog.WarnContext(ctx, "Decrypt error", "device", req.Device, "error", err)
 		return nil, err
 	}
 
 	req.Password, err = crypto.StringDecrypt(req.Password, key)
 	if err != nil {
+		slog.WarnContext(ctx, "Decrypt error", "device", req.Device, "error", err)
 		return nil, err
 	}
 
@@ -136,6 +143,7 @@ func (s *UsersService) Register(ctx context.Context, req *pb.RegisterRequest) (*
 	}
 	req.Name, err = crypto.StringDecrypt(req.Name, key)
 	if err != nil {
+		slog.WarnContext(ctx, "Decrypt error", "device", req.Device, "error", err)
 		return nil, err
 	}
 
@@ -145,12 +153,15 @@ func (s *UsersService) Register(ctx context.Context, req *pb.RegisterRequest) (*
 
 	hashedPassword, err := crypto.HashString(req.Password, true)
 	if err != nil {
+		slog.WarnContext(ctx, "Hash error", "device", req.Device, "error", err)
 		return resp, err
 	}
 
 	if err := s.SQLStorage.RegisterUser(ctx, req.Login, req.Name, hashedPassword); err != nil {
 		return resp, err
 	}
+
+	slog.InfoContext(ctx, "Success register user", "login", req.Login, "name", req.Name, "deviceID", req.Device)
 
 	return resp, nil
 }
@@ -160,6 +171,7 @@ func (s *UsersService) Auth(ctx context.Context, req *pb.AuthRequest) (*pb.AuthR
 	defer s.activeUsers.Unlock()
 	info, ok := s.activeUsers.auth[req.Device]
 	if !ok {
+		slog.WarnContext(ctx, "Auth: device did not pass TLS", "device", req.Device)
 		return nil, errors.New("This request is not expected for you")
 	}
 
@@ -167,10 +179,12 @@ func (s *UsersService) Auth(ctx context.Context, req *pb.AuthRequest) (*pb.AuthR
 	key := info.key
 	req.Login, err = crypto.StringDecrypt(req.Login, key)
 	if err != nil {
+		slog.WarnContext(ctx, "Decrypt error", "device", req.Device, "error", err)
 		return nil, err
 	}
 	req.Password, err = crypto.StringDecrypt(req.Password, key)
 	if err != nil {
+		slog.WarnContext(ctx, "Decrypt error", "device", req.Device, "error", err)
 		return nil, err
 	}
 
@@ -182,15 +196,18 @@ func (s *UsersService) Auth(ctx context.Context, req *pb.AuthRequest) (*pb.AuthR
 
 	currentPassword, err := s.SQLStorage.GetPassword(ctx, req.Login)
 	if err != nil {
+		slog.ErrorContext(ctx, "Get user password from DB", "login", req.Login, "error", err)
 		return resp, err
 	}
 
 	if !crypto.VerifyPassword(currentPassword, req.Password) {
+		slog.WarnContext(ctx, "User input incorrect password", "login", req.Login, "deviceID", req.Device)
 		return resp, errors.New("Incorrect login or password")
 	}
 
 	userName, id, err := s.SQLStorage.GetUserInfo(ctx, req.Login)
 	if err != nil {
+		slog.ErrorContext(ctx, "Get user info from DB", "login", req.Login, "error", err)
 		return resp, err
 	}
 
@@ -198,8 +215,11 @@ func (s *UsersService) Auth(ctx context.Context, req *pb.AuthRequest) (*pb.AuthR
 	resp.UserId = int64(id)
 
 	if err := s.cacheStorage.SetSession(ctx, req.Device, key, id); err != nil {
+		slog.ErrorContext(ctx, "Set session", "deviceID", req.Device, "userID", id)
 		return resp, err
 	}
+
+	slog.InfoContext(ctx, "Success auth user", "deviceID", req.Device, "error", err)
 
 	return resp, nil
 }
@@ -207,6 +227,7 @@ func (s *UsersService) Auth(ctx context.Context, req *pb.AuthRequest) (*pb.AuthR
 func (s *UsersService) GetAuthInfo(ctx context.Context, req *pb.GetAuthInfoRequest) (*pb.GetAuthInfoResponse, error) {
 	key, id, err := s.cacheStorage.GetAuthInfo(ctx, req.Device)
 	if err != nil {
+		slog.ErrorContext(ctx, "Get session", "error", err)
 		return nil, err
 	}
 
@@ -216,10 +237,12 @@ func (s *UsersService) GetAuthInfo(ctx context.Context, req *pb.GetAuthInfoReque
 
 	currentPassword, err := s.SQLStorage.GetPassword(ctx, req.Login)
 	if err != nil {
+		slog.ErrorContext(ctx, "Get use password from DB", "login", req.Login)
 		return resp, err
 	}
 
 	if !crypto.VerifyPassword(currentPassword, req.Password) {
+		slog.WarnContext(ctx, "User input incorrect password", "login", req.Login)
 		return resp, errors.New("Incorrect login or password")
 	}
 
