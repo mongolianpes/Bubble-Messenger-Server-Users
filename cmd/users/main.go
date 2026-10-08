@@ -3,6 +3,7 @@ package main
 import (
 	"log/slog"
 	"net"
+	"os"
 	"users/internal/db"
 	"users/internal/rdb"
 	"users/internal/service"
@@ -13,6 +14,9 @@ import (
 )
 
 func main() {
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil)) //
+	slog.SetDefault(logger)
+
 	usersStorage, err := db.NewPostgresStorage()
 	if err != nil {
 		slog.Error("Connect to DB", "error", err)
@@ -21,7 +25,7 @@ func main() {
 
 	sessionStorage, err := rdb.NewRedisStorage()
 	if err != nil {
-		slog.Error("Connect to DB")
+		slog.Error("Connect to DB", "error", err)
 		return
 	}
 

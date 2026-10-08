@@ -139,7 +139,7 @@ func (s *UsersService) Register(ctx context.Context, req *pb.RegisterRequest) (*
 		Key: key,
 	}
 	if len(req.Password) <= 9 {
-		return resp, err
+		return resp, errors.New("Пароль меньше 9 символов")
 	}
 	req.Name, err = crypto.StringDecrypt(req.Name, key)
 	if err != nil {

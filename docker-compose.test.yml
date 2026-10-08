@@ -6,7 +6,8 @@ services:
       container_name: userstest
       restart: unless-stopped
       environment:
-        DB_HOST: localhost
+        REDIS_HOST: host.docker.internal:6379
+        DB_HOST:  host.docker.internal
         DB_PORT: 5432
         DB_USER: postgres
         DB_PASSWORD: 123
