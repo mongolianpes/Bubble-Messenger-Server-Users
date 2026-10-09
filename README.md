@@ -29,7 +29,7 @@ service UsersService {
 
 ## Переменные окружения
 Для корректной работы необходимы переменные окружения:<br>
-REDIS_HOST - адрес Redis БД в формате host:port
+REDIS_HOST - адрес Redis БД в формате host:port<br>
 DB_HOST - адрес БД без порта<br>
 DB_PORT - порт БД<br>
 DB_USER - пользователь БД<br>
