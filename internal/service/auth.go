@@ -235,6 +235,18 @@ func (s *UsersService) GetAuthInfo(ctx context.Context, req *pb.GetAuthInfoReque
 		Key: key,
 	}
 
+	req.Login, err = crypto.StringDecrypt(req.Login, key)
+	if err != nil {
+		slog.WarnContext(ctx, "Decrypt error", "device", req.Device, "error", err)
+		return nil, err
+	}
+
+	req.Password, err = crypto.StringDecrypt(req.Password, key)
+	if err != nil {
+		slog.WarnContext(ctx, "Decrypt error", "device", req.Device, "error", err)
+		return nil, err
+	}
+
 	currentPassword, err := s.SQLStorage.GetPassword(ctx, req.Login)
 	if err != nil {
 		slog.ErrorContext(ctx, "Get use password from DB", "login", req.Login)
