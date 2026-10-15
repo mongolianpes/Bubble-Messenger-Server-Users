@@ -32,8 +32,9 @@ func (s *RedisStorage) GetUsers(ctx context.Context, login string) (result []*pb
 				return
 			}
 
+			login := key[5:]
 			result = append(result, &pb.UserInfo{
-				Login: key,
+				Login: login,
 				Name:  name,
 			})
 		}
